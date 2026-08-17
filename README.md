@@ -241,25 +241,6 @@ The report includes planned WinForms wireframes and a navigation flow for:
 
 ---
 
-## Project Report Contents
-
-The submitted report contains:
-
-1. Project Title
-2. Introduction
-3. Case Study
-4. Functionalities
-5. ER Diagram
-6. Database Normalization
-7. Physical Database Schema
-8. Data Dictionary
-9. SQL Queries
-10. UI Navigation / UX Flow Diagram
-11. Planned WinForms Form Designs
-12. Conclusion
-
----
-
 ## Current Project Status
 
 This repository currently documents the **design and report stage** of SkillHub.
