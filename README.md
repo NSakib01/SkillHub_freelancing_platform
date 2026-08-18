@@ -228,6 +228,22 @@ The report includes planned WinForms wireframes and a navigation flow for:
 
 ---
 
+## Project Screenshots
+
+The following screenshots and diagrams are stored in the repository under the `Extras` folder.
+
+| Screenshot 01 | Screenshot 02 |
+|---|---|
+| ![SkillHub Screenshot 01](Extras/picturesample00001.png) | ![SkillHub Screenshot 02](Extras/picturesample00002.png) |
+| ![SkillHub Screenshot 03](Extras/picturesample00003.png) | ![SkillHub Screenshot 04](Extras/picturesample00004.png) |
+| ![SkillHub Screenshot 05](Extras/picturesample00005.png) | ![SkillHub Screenshot 06](Extras/picturesample00006.png) |
+| ![SkillHub Screenshot 07](Extras/picturesample00007.png) | ![SkillHub Screenshot 08](Extras/picturesample00008.png) |
+| ![SkillHub Screenshot 09](Extras/picturesample00009.png) | ![SkillHub Screenshot 10](Extras/picturesample00010.png) |
+| ![SkillHub Screenshot 11](Extras/picturesample00011.png) | ![SkillHub Screenshot 12](Extras/picturesample00012.png) |
+| ![SkillHub Screenshot 13](Extras/picturesample00013.png) | ![SkillHub Screenshot 14](Extras/picturesample00014.png) |
+| ![SkillHub Screenshot 15](Extras/picturesample00015.png) | ![SkillHub Screenshot 16](Extras/picturesample00016.png) |
+| ![SkillHub Screenshot 17](Extras/picturesample00017.png) |  |
+
 ## Team Members
 
 | Serial | Name | Student ID | Main Contribution |
