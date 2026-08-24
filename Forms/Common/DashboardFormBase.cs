@@ -1,14 +1,18 @@
 using System;
+using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Windows.Forms;
 using SkillHub.Data;
+using SkillHub.Forms.Freelancer;
+using SkillHub.Models;
 using SkillHub.Services;
 using SkillHub.Utilities;
 
 namespace SkillHub.Forms.Common
 {
+    [DesignerCategory("Code")]
     public abstract class DashboardFormBase : Form
     {
         private readonly AuthenticationService _authentication;
@@ -272,10 +276,7 @@ namespace SkillHub.Forms.Common
         {
             try
             {
-                using (FrmProfile profile = new FrmProfile(_authentication))
-                {
-                    profile.ShowDialog(this);
-                }
+                OpenProfile();
 
                 RefreshIdentity();
             }
@@ -297,6 +298,14 @@ namespace SkillHub.Forms.Common
             catch (Exception exception)
             {
                 UiFactory.ShowError(this, exception);
+            }
+        }
+
+        protected virtual void OpenProfile()
+        {
+            using (FrmProfile profile = new FrmProfile(_authentication))
+            {
+                profile.ShowDialog(this);
             }
         }
 

@@ -1,31 +1,46 @@
 using SkillHub.Forms.Common;
+using SkillHub.Forms.Freelancer;
 using SkillHub.Models;
 using SkillHub.Services;
 using SkillHub.Utilities;
+using System.ComponentModel;
 
 namespace SkillHub.Forms.Freelancer
 {
-    /// <summary>
-    /// Authorized freelancer landing page for Sadman's service and wallet forms.
-    /// </summary>
+    [DesignerCategory("Code")]
     public sealed class FrmFreelancerDashboard : DashboardFormBase
+
     {
+        protected override void OpenProfile()
+        {
+            FrmFreelancerProfile profile = new FrmFreelancerProfile(UserSession.UserId);
+            
+                profile.ShowDialog(this);
+            
+        }
+
         public FrmFreelancerDashboard(AuthenticationService authentication)
-            : base(authentication, UserRoles.Freelancer, "SkillHub | Freelancer Dashboard")
+            : base(
+                authentication,
+                UserRoles.Freelancer,
+                "SkillHub | Freelancer Dashboard")
         {
             AddMainCard(
                 "Your published service listings",
                 ReadCount(
-                    "SELECT COUNT(*) FROM dbo.Services WHERE FreelancerId = @UserId;",
+                    "SELECT COUNT(*) " +
+                    "FROM dbo.Services " +
+                    "WHERE FreelancerId = @UserId;",
                     UserSession.UserId)
                 + " software-service listing(s) currently belong to your account.");
 
             AddMainCard(
                 "Your active orders",
                 ReadCount(
-                    "SELECT COUNT(*) FROM dbo.Orders "
-                    + "WHERE FreelancerId = @UserId "
-                    + "AND OrderStatus IN (N'Placed', N'In Progress', N'Delivered');",
+                    "SELECT COUNT(*) " +
+                    "FROM dbo.Orders " +
+                    "WHERE FreelancerId = @UserId " +
+                    "AND OrderStatus IN (N'Placed', N'In Progress', N'Delivered');",
                     UserSession.UserId)
                 + " order(s) are waiting for freelancer processing or client approval.");
 
@@ -33,21 +48,25 @@ namespace SkillHub.Forms.Freelancer
                 "Available wallet balance",
                 "BDT "
                 + ReadCount(
-                    "SELECT AvailableBalance "
-                    + "FROM dbo.vw_FreelancerWalletBalances "
-                    + "WHERE FreelancerId = @UserId;",
+                    "SELECT AvailableBalance " +
+                    "FROM dbo.vw_FreelancerWalletBalances " +
+                    "WHERE FreelancerId = @UserId;",
                     UserSession.UserId)
                 + " is available after pending withdrawal requests.");
 
             AddMainCard(
-                "Freelancer module owner: Sadman",
-                "Attach FrmFreelancerProfile, FrmManageServices, FrmServiceEditor, "
-                + "FrmFreelancerOrders, FrmWallet and FrmWithdrawal here.");
+                "Freelancer workspace",
+                "Manage your profile, publish software services, "
+                + "process client orders and manage your wallet.");
 
             AddSideCard(
-                "Freelancer integration tables",
-                "FreelancerProfiles, Services, Orders, WalletTransactions "
-                + "and WithdrawalRequests. Always filter by UserSession.UserId.");
+                "Freelancer module",
+                "Profile • Services • Orders • Wallet • Withdrawals");
+
+            AddSideCard(
+                "Security",
+                "All freelancer data is loaded using the signed-in "
+                + "UserSession.UserId.");
         }
     }
 }
