@@ -70,15 +70,21 @@
     <Compile Include="Forms\Freelancer\FrmFreelancerProfile.Designer.cs">
       <DependentUpon>FrmFreelancerProfile.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Freelancer\FrmManageServices.cs" />
+    <Compile Include="Forms\Freelancer\FrmManageServices.Designer.cs">
+      <DependentUpon>FrmManageServices.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Admin.cs" />
     <Compile Include="Models\Client.cs" />
     <Compile Include="Models\Freelancer.cs" />
     <Compile Include="Models\FreelancerProfile.cs" />
+    <Compile Include="Models\Service.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\UserRoles.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\FreelancerProfileRepository.cs" />
+    <Compile Include="Repositories\FreelancerServiceRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
     <Compile Include="Services\AuthenticationService.cs" />
     <Compile Include="Services\AuthorizationService.cs" />

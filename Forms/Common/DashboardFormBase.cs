@@ -51,6 +51,57 @@ namespace SkillHub.Forms.Common
             AddCard(_mainContent, title, description, 570, 118);
         }
 
+        protected void AddMainCardWithAction(
+    string title,
+    string description,
+    string actionText,
+    EventHandler actionHandler)
+        {
+            Panel card = UiFactory.CreateCard(570, 118);
+
+            Label titleLabel = new Label
+            {
+                AutoSize = false,
+                Width = 360,
+                Height = 27,
+                Text = title,
+                Font = new Font(
+                    "Segoe UI",
+                    11.5F,
+                    FontStyle.Bold),
+                ForeColor = UiFactory.PrimaryDark,
+                Location = new Point(20, 15)
+            };
+
+            Label descriptionLabel = new Label
+            {
+                AutoSize = false,
+                Width = 360,
+                Height = 45,
+                Text = description,
+                ForeColor = UiFactory.MutedText,
+                Location = new Point(21, 46)
+            };
+
+            Button actionButton =
+                UiFactory.CreateButton(
+                    actionText,
+                    true,
+                    145,
+                    40);
+
+            actionButton.Location =
+                new Point(405, 38);
+
+            actionButton.Click += actionHandler;
+
+            card.Controls.Add(titleLabel);
+            card.Controls.Add(descriptionLabel);
+            card.Controls.Add(actionButton);
+
+            _mainContent.Controls.Add(card);
+        }
+
         protected void AddSideCard(string title, string description)
         {
             AddCard(_sideContent, title, description, 350, 130);
