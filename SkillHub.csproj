@@ -74,6 +74,10 @@
     <Compile Include="Forms\Freelancer\FrmManageServices.Designer.cs">
       <DependentUpon>FrmManageServices.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Freelancer\FrmServiceEditor.cs" />
+    <Compile Include="Forms\Freelancer\FrmServiceEditor.Designer.cs">
+      <DependentUpon>FrmServiceEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Admin.cs" />
     <Compile Include="Models\Client.cs" />
     <Compile Include="Models\Freelancer.cs" />
