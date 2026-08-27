@@ -38,10 +38,10 @@ namespace SkillHub.Forms.Freelancer
                 ManageServicesClick);
 
             // ========================================================
-            // ACTIVE ORDERS
+            // ORDERS CARD + OPEN ORDERS ACTION
             // ========================================================
 
-            AddMainCard(
+            AddMainCardWithAction(
                 "Your active orders",
                 ReadCount(
                     "SELECT COUNT(*) " +
@@ -51,7 +51,9 @@ namespace SkillHub.Forms.Freelancer
                     "(N'Placed', N'In Progress', N'Delivered');",
                     UserSession.UserId)
                 + " order(s) are waiting for freelancer processing "
-                + "or client approval.");
+                + "or client approval.",
+                "Manage Orders",
+                ManageOrdersClick);
 
             // ========================================================
             // WALLET
@@ -117,6 +119,28 @@ namespace SkillHub.Forms.Freelancer
                        new FrmManageServices())
                 {
                     services.ShowDialog(this);
+                }
+            }
+            catch (Exception exception)
+            {
+                UiFactory.ShowError(this, exception);
+            }
+        }
+
+        // ============================================================
+        // MANAGE ORDERS
+        // ============================================================
+
+        private void ManageOrdersClick(
+            object sender,
+            EventArgs e)
+        {
+            try
+            {
+                using (FrmFreelancerOrders orders =
+                       new FrmFreelancerOrders())
+                {
+                    orders.ShowDialog(this);
                 }
             }
             catch (Exception exception)
