@@ -10,20 +10,22 @@ using System.Windows.Forms;
 namespace SkillHub.Forms.Freelancer
 {
     [DesignerCategory("Code")]
-    public sealed class FrmFreelancerDashboard : DashboardFormBase
+    public sealed class FrmFreelancerDashboard
+        : DashboardFormBase
     {
         // ============================================================
         // CONSTRUCTOR
         // ============================================================
 
-        public FrmFreelancerDashboard(AuthenticationService authentication)
+        public FrmFreelancerDashboard(
+            AuthenticationService authentication)
             : base(
                 authentication,
                 UserRoles.Freelancer,
                 "SkillHub | Freelancer Dashboard")
         {
             // ========================================================
-            // SERVICE CARD + MANAGE SERVICES ACTION
+            // SERVICES
             // ========================================================
 
             AddMainCardWithAction(
@@ -38,7 +40,7 @@ namespace SkillHub.Forms.Freelancer
                 ManageServicesClick);
 
             // ========================================================
-            // ORDERS CARD + OPEN ORDERS ACTION
+            // ORDERS
             // ========================================================
 
             AddMainCardWithAction(
@@ -59,15 +61,34 @@ namespace SkillHub.Forms.Freelancer
             // WALLET
             // ========================================================
 
-            AddMainCard(
-                "Available wallet balance",
-                "BDT "
-                + ReadCount(
+            decimal? walletBalance =
+                ReadDecimal(
                     "SELECT AvailableBalance " +
                     "FROM dbo.vw_FreelancerWalletBalances " +
                     "WHERE FreelancerId = @UserId;",
-                    UserSession.UserId)
-                + " is available after pending withdrawal requests.");
+                    UserSession.UserId);
+
+            string walletText;
+
+            if (walletBalance.HasValue)
+            {
+                walletText =
+                    "BDT "
+                    + walletBalance.Value.ToString("N2")
+                    + " is currently available for withdrawal.";
+            }
+            else
+            {
+                walletText =
+                    "Your wallet balance is currently unavailable. "
+                    + "Please check your wallet details.";
+            }
+
+            AddMainCardWithAction(
+                "Available wallet balance",
+                walletText,
+                "View Wallet",
+                ViewWalletClick);
 
             // ========================================================
             // WORKSPACE
@@ -99,7 +120,8 @@ namespace SkillHub.Forms.Freelancer
         protected override void OpenProfile()
         {
             using (FrmFreelancerProfile profile =
-                   new FrmFreelancerProfile(UserSession.UserId))
+                   new FrmFreelancerProfile(
+                       UserSession.UserId))
             {
                 profile.ShowDialog(this);
             }
@@ -123,7 +145,9 @@ namespace SkillHub.Forms.Freelancer
             }
             catch (Exception exception)
             {
-                UiFactory.ShowError(this, exception);
+                UiFactory.ShowError(
+                    this,
+                    exception);
             }
         }
 
@@ -145,7 +169,60 @@ namespace SkillHub.Forms.Freelancer
             }
             catch (Exception exception)
             {
-                UiFactory.ShowError(this, exception);
+                UiFactory.ShowError(
+                    this,
+                    exception);
+            }
+        }
+
+        // ============================================================
+        // VIEW WALLET
+        // ============================================================
+
+        private void ViewWalletClick(
+            object sender,
+            EventArgs e)
+        {
+            try
+            {
+                decimal? balance =
+                    ReadDecimal(
+                        "SELECT AvailableBalance " +
+                        "FROM dbo.vw_FreelancerWalletBalances " +
+                        "WHERE FreelancerId = @UserId;",
+                        UserSession.UserId);
+
+                if (!balance.HasValue)
+                {
+                    MessageBox.Show(
+                        this,
+                        "Your wallet balance could not be loaded.",
+                        "Wallet",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+
+                    return;
+                }
+
+                MessageBox.Show(
+                    this,
+                    "Freelancer Wallet\r\n"
+                    + "────────────────────────\r\n\r\n"
+                    + "Available Balance\r\n"
+                    + "BDT "
+                    + balance.Value.ToString("N2")
+                    + "\r\n\r\n"
+                    + "This is the amount currently available "
+                    + "for withdrawal.",
+                    "Wallet Balance",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+            catch (Exception exception)
+            {
+                UiFactory.ShowError(
+                    this,
+                    exception);
             }
         }
     }

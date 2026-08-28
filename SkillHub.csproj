@@ -82,20 +82,32 @@
     <Compile Include="Forms\Freelancer\FrmServiceEditor.Designer.cs">
       <DependentUpon>FrmServiceEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Freelancer\FrmWallet.cs" />
+    <Compile Include="Forms\Freelancer\FrmWallet.Designer.cs">
+      <DependentUpon>FrmWallet.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Freelancer\FrmWithdrawal.cs" />
+    <Compile Include="Forms\Freelancer\FrmWithdrawal.Designer.cs">
+      <DependentUpon>FrmWithdrawal.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Admin.cs" />
     <Compile Include="Models\Client.cs" />
     <Compile Include="Models\Freelancer.cs" />
     <Compile Include="Models\FreelancerProfile.cs" />
+    <Compile Include="Models\FreelancerWallet.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\Service.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\UserRoles.cs" />
+    <Compile Include="Models\Withdrawal.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\FreelancerOrderRepository.cs" />
     <Compile Include="Repositories\FreelancerProfileRepository.cs" />
     <Compile Include="Repositories\FreelancerServiceRepository.cs" />
+    <Compile Include="Repositories\FreelancerWalletRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
+    <Compile Include="Repositories\WithdrawalRepository.cs" />
     <Compile Include="Services\AuthenticationService.cs" />
     <Compile Include="Services\AuthorizationService.cs" />
     <Compile Include="Utilities\InputValidator.cs" />
