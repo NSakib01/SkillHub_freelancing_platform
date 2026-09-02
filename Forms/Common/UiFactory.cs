@@ -24,7 +24,11 @@ namespace SkillHub.Forms.Common
             form.StartPosition = FormStartPosition.CenterScreen;
             form.MinimumSize = minimumSize;
             form.BackColor = PageBackground;
-            form.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            form.Font = new Font(
+                "Segoe UI",
+                10F,
+                FontStyle.Regular,
+                GraphicsUnit.Point);
             form.AutoScaleMode = AutoScaleMode.Font;
         }
 
@@ -33,7 +37,10 @@ namespace SkillHub.Forms.Common
             return new Label
             {
                 AutoSize = true,
-                Font = new Font("Segoe UI", size, FontStyle.Bold),
+                Font = new Font(
+                    "Segoe UI",
+                    size,
+                    FontStyle.Bold),
                 ForeColor = Text,
                 Text = text,
                 Margin = new Padding(0, 0, 0, 8)
@@ -58,20 +65,28 @@ namespace SkillHub.Forms.Common
             return new Label
             {
                 AutoSize = true,
-                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                Font = new Font(
+                    "Segoe UI",
+                    9.5F,
+                    FontStyle.Bold),
                 ForeColor = Text,
                 Text = text,
                 Margin = new Padding(0, 8, 0, 4)
             };
         }
 
-        public static TextBox CreateTextBox(int width, bool password = false)
+        public static TextBox CreateTextBox(
+            int width,
+            bool password = false)
         {
             return new TextBox
             {
                 Width = width,
                 Height = 35,
-                Font = new Font("Segoe UI", 11F, FontStyle.Regular),
+                Font = new Font(
+                    "Segoe UI",
+                    11F,
+                    FontStyle.Regular),
                 BorderStyle = BorderStyle.FixedSingle,
                 UseSystemPasswordChar = password,
                 Margin = new Padding(0, 0, 0, 10)
@@ -84,8 +99,11 @@ namespace SkillHub.Forms.Common
             int width = 160,
             int height = 40)
         {
-            Color backColor = primary ? Primary : Color.White;
-            Color foreColor = primary ? Color.White : PrimaryDark;
+            Color backColor =
+                primary ? Primary : Color.White;
+
+            Color foreColor =
+                primary ? Color.White : PrimaryDark;
 
             Button button = new Button
             {
@@ -95,26 +113,72 @@ namespace SkillHub.Forms.Common
                 BackColor = backColor,
                 ForeColor = foreColor,
                 FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                Font = new Font(
+                    "Segoe UI",
+                    9.5F,
+                    FontStyle.Bold),
                 Cursor = Cursors.Hand,
                 Margin = new Padding(0, 6, 12, 6),
                 UseVisualStyleBackColor = false
             };
 
-            button.FlatAppearance.BorderSize = primary ? 0 : 1;
+            button.FlatAppearance.BorderSize =
+                primary ? 0 : 1;
+
             button.FlatAppearance.BorderColor = Border;
 
             return button;
         }
 
-        public static Button CreateDangerButton(string text, int width = 160)
+        public static Button CreateDangerButton(
+            string text,
+            int width = 160)
         {
-            Button button = CreateButton(text, true, width);
+            Button button =
+                CreateButton(text, true, width);
+
             button.BackColor = Danger;
+
             return button;
         }
 
-        public static Panel CreateCard(int width, int height)
+        public static void AddBackToDashboardButton(Form form)
+        {
+            if (form == null)
+            {
+                throw new ArgumentNullException(nameof(form));
+            }
+
+            Button backButton = CreateButton(
+                "← Back to Dashboard",
+                false,
+                180,
+                38);
+
+            backButton.Anchor =
+                AnchorStyles.Bottom |
+                AnchorStyles.Right;
+
+            backButton.Click += delegate
+            {
+                form.Close();
+            };
+
+            backButton.Location = new Point(
+                form.ClientSize.Width
+                - backButton.Width
+                - 20,
+                form.ClientSize.Height
+                - backButton.Height
+                - 20);
+
+            form.Controls.Add(backButton);
+            backButton.BringToFront();
+        }
+
+        public static Panel CreateCard(
+            int width,
+            int height)
         {
             Panel panel = new Panel
             {
@@ -125,7 +189,9 @@ namespace SkillHub.Forms.Common
                 Margin = new Padding(0, 0, 0, 18)
             };
 
-            panel.Paint += delegate(object sender, PaintEventArgs arguments)
+            panel.Paint += delegate (
+                object sender,
+                PaintEventArgs arguments)
             {
                 using (Pen pen = new Pen(Border))
                 {
@@ -135,7 +201,9 @@ namespace SkillHub.Forms.Common
                         panel.ClientSize.Width - 1,
                         panel.ClientSize.Height - 1);
 
-                    arguments.Graphics.DrawRectangle(pen, border);
+                    arguments.Graphics.DrawRectangle(
+                        pen,
+                        border);
                 }
             };
 
@@ -152,8 +220,10 @@ namespace SkillHub.Forms.Common
                 AllowUserToAddRows = false,
                 AllowUserToDeleteRows = false,
                 AllowUserToResizeRows = false,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells,
-                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
+                AutoSizeColumnsMode =
+                    DataGridViewAutoSizeColumnsMode.DisplayedCells,
+                SelectionMode =
+                    DataGridViewSelectionMode.FullRowSelect,
                 MultiSelect = false,
                 ReadOnly = true,
                 RowHeadersVisible = false,
@@ -163,31 +233,52 @@ namespace SkillHub.Forms.Common
                 RowTemplate = { Height = 36 }
             };
 
-            grid.ColumnHeadersDefaultCellStyle.BackColor = PrimaryDark;
-            grid.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            grid.ColumnHeadersDefaultCellStyle.BackColor =
+                PrimaryDark;
+
+            grid.ColumnHeadersDefaultCellStyle.ForeColor =
+                Color.White;
+
             grid.ColumnHeadersDefaultCellStyle.Font =
-                new Font("Segoe UI", 9F, FontStyle.Bold);
-            grid.DefaultCellStyle.SelectionBackColor = Color.FromArgb(224, 236, 248);
-            grid.DefaultCellStyle.SelectionForeColor = Text;
-            grid.DefaultCellStyle.ForeColor = Text;
-            grid.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(247, 249, 252);
+                new Font(
+                    "Segoe UI",
+                    9F,
+                    FontStyle.Bold);
+
+            grid.DefaultCellStyle.SelectionBackColor =
+                Color.FromArgb(224, 236, 248);
+
+            grid.DefaultCellStyle.SelectionForeColor =
+                Text;
+
+            grid.DefaultCellStyle.ForeColor =
+                Text;
+
+            grid.AlternatingRowsDefaultCellStyle.BackColor =
+                Color.FromArgb(247, 249, 252);
 
             return grid;
         }
 
-        public static void ShowError(IWin32Window owner, Exception exception)
+        public static void ShowError(
+            IWin32Window owner,
+            Exception exception)
         {
             string message;
 
             if (exception is SqlException)
             {
-                message = "A database operation could not be completed. "
-                    + "Verify that SkillHubDB was created and the connection is available.";
+                message =
+                    "A database operation could not be completed. "
+                    + "Verify that SkillHubDB was created "
+                    + "and the connection is available.";
             }
             else if (exception is ConfigurationErrorsException)
             {
-                message = "The application configuration is missing or invalid. "
-                    + "Check the SkillHubConnection entry in App.config.";
+                message =
+                    "The application configuration is missing "
+                    + "or invalid. Check the SkillHubConnection "
+                    + "entry in App.config.";
             }
             else
             {
@@ -202,7 +293,9 @@ namespace SkillHub.Forms.Common
                 MessageBoxIcon.Warning);
         }
 
-        public static void ShowSuccess(IWin32Window owner, string message)
+        public static void ShowSuccess(
+            IWin32Window owner,
+            string message)
         {
             MessageBox.Show(
                 owner,
