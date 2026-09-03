@@ -25,12 +25,23 @@ namespace SkillHub.Repositories
                     ServiceId,
                     FreelancerId,
                     FreelancerName,
+                    ProfessionalTitle,
+                    FreelancerBiography,
+                    FreelancerSkills,
+                    FreelancerProfileImagePath,
+                    IsVerified,
+                    AverageRating,
+                    CategoryId,
+                    CategoryCode,
+                    CategoryName,
                     Title,
                     Description,
+                    ServiceImagePath,
                     Price,
                     DeliveryDays,
                     AvailableSlots,
-                    IsActive
+                    IsActive,
+                    CreatedAt
                 FROM dbo.vw_ServiceCatalog
                 WHERE IsActive = 1
                 ORDER BY ServiceId DESC;";
@@ -57,12 +68,23 @@ namespace SkillHub.Repositories
                     ServiceId,
                     FreelancerId,
                     FreelancerName,
+                    ProfessionalTitle,
+                    FreelancerBiography,
+                    FreelancerSkills,
+                    FreelancerProfileImagePath,
+                    IsVerified,
+                    AverageRating,
+                    CategoryId,
+                    CategoryCode,
+                    CategoryName,
                     Title,
                     Description,
+                    ServiceImagePath,
                     Price,
                     DeliveryDays,
                     AvailableSlots,
-                    IsActive
+                    IsActive,
+                    CreatedAt
                 FROM dbo.vw_ServiceCatalog
                 WHERE IsActive = 1
                   AND
@@ -70,6 +92,9 @@ namespace SkillHub.Repositories
                       Title LIKE @Search
                       OR Description LIKE @Search
                       OR FreelancerName LIKE @Search
+                      OR ProfessionalTitle LIKE @Search
+                      OR FreelancerSkills LIKE @Search
+                      OR CategoryName LIKE @Search
                   )
                 ORDER BY ServiceId DESC;";
 
@@ -107,12 +132,23 @@ namespace SkillHub.Repositories
                     ServiceId,
                     FreelancerId,
                     FreelancerName,
+                    ProfessionalTitle,
+                    FreelancerBiography,
+                    FreelancerSkills,
+                    FreelancerProfileImagePath,
+                    IsVerified,
+                    AverageRating,
+                    CategoryId,
+                    CategoryCode,
+                    CategoryName,
                     Title,
                     Description,
+                    ServiceImagePath,
                     Price,
                     DeliveryDays,
                     AvailableSlots,
-                    IsActive
+                    IsActive,
+                    CreatedAt
                 FROM dbo.vw_ServiceCatalog
                 WHERE ServiceId = @ServiceId
                   AND IsActive = 1;";
@@ -145,12 +181,23 @@ namespace SkillHub.Repositories
             item.ServiceId = Convert.ToInt32(reader["ServiceId"]);
             item.FreelancerId = Convert.ToInt32(reader["FreelancerId"]);
             item.FreelancerName = Convert.ToString(reader["FreelancerName"]);
+            item.ProfessionalTitle = Convert.ToString(reader["ProfessionalTitle"]);
+            item.FreelancerBiography = Convert.ToString(reader["FreelancerBiography"]);
+            item.FreelancerSkills = Convert.ToString(reader["FreelancerSkills"]);
+            item.FreelancerProfileImagePath = Convert.ToString(reader["FreelancerProfileImagePath"]);
+            item.IsVerified = Convert.ToBoolean(reader["IsVerified"]);
+            item.AverageRating = Convert.ToDecimal(reader["AverageRating"]);
+            item.CategoryId = Convert.ToInt32(reader["CategoryId"]);
+            item.CategoryCode = Convert.ToString(reader["CategoryCode"]);
+            item.CategoryName = Convert.ToString(reader["CategoryName"]);
             item.Title = Convert.ToString(reader["Title"]);
             item.Description = Convert.ToString(reader["Description"]);
+            item.ServiceImagePath = Convert.ToString(reader["ServiceImagePath"]);
             item.Price = Convert.ToDecimal(reader["Price"]);
             item.DeliveryDays = Convert.ToInt32(reader["DeliveryDays"]);
             item.AvailableSlots = Convert.ToInt32(reader["AvailableSlots"]);
             item.IsActive = Convert.ToBoolean(reader["IsActive"]);
+            item.CreatedAt = Convert.ToDateTime(reader["CreatedAt"]);
 
             return item;
         }

@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Drawing;
 using System.Windows.Forms;
+using SkillHub.Repositories;
+using SkillHub.UI;
+using SkillHub.Utilities;
 
 namespace SkillHub.Forms.Freelancer
 {
@@ -12,9 +16,17 @@ namespace SkillHub.Forms.Freelancer
         private readonly string connectionString =
     ConfigurationManager.ConnectionStrings["SkillHubConnection"].ConnectionString;
 
+        private PictureBox profileImagePreview;
+        private Button chooseImageButton;
+        private Button removeImageButton;
+        private string profileImagePath;
+        private string pendingProfileImageSource;
+
         public FrmFreelancerProfile(int freelancerId)
         {
             InitializeComponent();
+
+            ApplyModernLayout();
 
             this.freelancerId = freelancerId;
 
@@ -32,6 +44,7 @@ namespace SkillHub.Forms.Freelancer
                     fp.ProfessionalTitle,
                     fp.Biography,
                     fp.Skills,
+                    u.ProfileImagePath,
                     fp.IsVerified,
                     fp.AverageRating
                 FROM dbo.Users u
@@ -105,6 +118,14 @@ namespace SkillHub.Forms.Freelancer
                                     ? ""
                                     : reader["Skills"].ToString();
 
+                            profileImagePath =
+                                reader["ProfileImagePath"] == DBNull.Value
+                                    ? string.Empty
+                                    : reader["ProfileImagePath"].ToString();
+
+                            pendingProfileImageSource = null;
+                            ShowProfileImagePreview();
+
                             bool isVerified =
                                 reader["IsVerified"] != DBNull.Value &&
                                 Convert.ToBoolean(reader["IsVerified"]);
@@ -151,6 +172,7 @@ namespace SkillHub.Forms.Freelancer
                     Email = @Email,
                     Phone = @Phone,
                     Address = @Address,
+                    ProfileImagePath = @ProfileImagePath,
                     UpdatedAt = SYSDATETIME()
                 WHERE UserId = @UserId;";
 
@@ -165,6 +187,8 @@ namespace SkillHub.Forms.Freelancer
 
             try
             {
+                string savedImagePath = PrepareProfileImagePath();
+
                 using (SqlConnection connection =
                     new SqlConnection(connectionString))
                 {
@@ -200,6 +224,14 @@ namespace SkillHub.Forms.Freelancer
                                     string.IsNullOrWhiteSpace(txtAddress.Text)
                                         ? (object)DBNull.Value
                                         : txtAddress.Text.Trim());
+
+                                command.Parameters.Add(
+                                    "@ProfileImagePath",
+                                    System.Data.SqlDbType.NVarChar,
+                                    300).Value =
+                                    string.IsNullOrWhiteSpace(savedImagePath)
+                                        ? (object)DBNull.Value
+                                        : savedImagePath;
 
                                 command.Parameters.AddWithValue(
                                     "@UserId",
@@ -257,6 +289,11 @@ namespace SkillHub.Forms.Freelancer
                     "Success",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
+
+                if (UserSession.IsAuthenticated && UserSession.UserId == freelancerId)
+                {
+                    UserSession.Refresh(new UserRepository().GetById(freelancerId));
+                }
 
                 LoadProfile();
             }
@@ -348,6 +385,189 @@ namespace SkillHub.Forms.Freelancer
         private void btnCancel_Click(object sender, EventArgs e)
         {
             LoadProfile();
+        }
+
+        private void ApplyModernLayout()
+        {
+            ClientSize = new Size(1080, 680);
+            MinimumSize = new Size(1100, 720);
+            BackColor = MarketplaceTheme.PageBackground;
+            Font = MarketplaceTheme.Body();
+
+            lblTitle.Location = new Point(270, 27);
+            lblTitle.ForeColor = MarketplaceTheme.DeepCharcoal;
+            lblTitle.Text = "Build Your Freelancer Profile";
+
+            Label[] fieldLabels =
+            {
+                lblFullName, lblEmail, lblPhone, lblAddress,
+                lblProfessionalTitle, lblBiography, lblSkills
+            };
+
+            foreach (Label label in fieldLabels)
+            {
+                label.Left = 270;
+                label.Font = MarketplaceTheme.SubHeading(9.5F);
+                label.ForeColor = MarketplaceTheme.MutedText;
+            }
+
+            TextBox[] fields =
+            {
+                txtFullName, txtEmail, txtPhone, txtAddress,
+                txtProfessionalTitle, txtBiography, txtSkills
+            };
+
+            foreach (TextBox field in fields)
+            {
+                field.Left = 430;
+                field.Width = 600;
+                field.Font = MarketplaceTheme.Body(10F);
+                field.BackColor = Color.White;
+                field.BorderStyle = BorderStyle.FixedSingle;
+            }
+
+            RoundedPanel visualCard = new RoundedPanel
+            {
+                Location = new Point(30, 88),
+                Size = new Size(210, 500),
+                BackColor = Color.White,
+                CornerRadius = 18,
+                BorderThickness = 0
+            };
+
+            profileImagePreview = new PictureBox
+            {
+                Location = new Point(29, 28),
+                Size = new Size(152, 152),
+                SizeMode = PictureBoxSizeMode.StretchImage
+            };
+
+            chooseImageButton = new Button
+            {
+                Text = "Choose Photo",
+                Location = new Point(29, 198),
+                Size = new Size(152, 38),
+                BackColor = MarketplaceTheme.Primary,
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Cursor = Cursors.Hand
+            };
+            chooseImageButton.FlatAppearance.BorderSize = 0;
+            chooseImageButton.Click += ChooseImageButtonClick;
+
+            removeImageButton = new Button
+            {
+                Text = "Remove Photo",
+                Location = new Point(29, 245),
+                Size = new Size(152, 34),
+                BackColor = Color.White,
+                ForeColor = MarketplaceTheme.MutedText,
+                FlatStyle = FlatStyle.Flat,
+                Cursor = Cursors.Hand
+            };
+            removeImageButton.FlatAppearance.BorderColor = MarketplaceTheme.Border;
+            removeImageButton.Click += RemoveImageButtonClick;
+
+            lblVerified.Location = new Point(29, 313);
+            lblVerified.Font = MarketplaceTheme.Body(8.5F);
+            lblVerified.ForeColor = MarketplaceTheme.MutedText;
+            lblVerifiedValue.Location = new Point(29, 338);
+            lblVerifiedValue.Font = MarketplaceTheme.SubHeading(10F);
+            lblVerifiedValue.ForeColor = MarketplaceTheme.Success;
+
+            lblRating.Location = new Point(29, 386);
+            lblRating.Font = MarketplaceTheme.Body(8.5F);
+            lblRating.ForeColor = MarketplaceTheme.MutedText;
+            lblRatingValue.Location = new Point(29, 411);
+            lblRatingValue.Font = MarketplaceTheme.Heading(16F);
+            lblRatingValue.ForeColor = MarketplaceTheme.Warning;
+
+            visualCard.Controls.Add(profileImagePreview);
+            visualCard.Controls.Add(chooseImageButton);
+            visualCard.Controls.Add(removeImageButton);
+            visualCard.Controls.Add(lblVerified);
+            visualCard.Controls.Add(lblVerifiedValue);
+            visualCard.Controls.Add(lblRating);
+            visualCard.Controls.Add(lblRatingValue);
+            Controls.Add(visualCard);
+
+            btnSave.Location = new Point(820, 585);
+            btnSave.Size = new Size(100, 40);
+            btnSave.BackColor = MarketplaceTheme.Primary;
+            btnSave.ForeColor = Color.White;
+            btnSave.FlatStyle = FlatStyle.Flat;
+            btnSave.FlatAppearance.BorderSize = 0;
+            btnSave.Font = MarketplaceTheme.SubHeading(9.5F);
+            btnSave.Cursor = Cursors.Hand;
+
+            btnCancel.Location = new Point(930, 585);
+            btnCancel.Size = new Size(100, 40);
+            btnCancel.BackColor = Color.White;
+            btnCancel.ForeColor = MarketplaceTheme.Primary;
+            btnCancel.FlatStyle = FlatStyle.Flat;
+            btnCancel.FlatAppearance.BorderColor = MarketplaceTheme.Border;
+            btnCancel.Font = MarketplaceTheme.SubHeading(9.5F);
+            btnCancel.Cursor = Cursors.Hand;
+
+            ShowProfileImagePreview();
+        }
+
+        private void ChooseImageButtonClick(object sender, EventArgs e)
+        {
+            using (OpenFileDialog dialog = new OpenFileDialog())
+            {
+                dialog.Title = "Choose your profile photo";
+                dialog.Filter = "Image files|*.png;*.jpg;*.jpeg;*.bmp|All files|*.*";
+                dialog.CheckFileExists = true;
+
+                if (dialog.ShowDialog(this) == DialogResult.OK)
+                {
+                    pendingProfileImageSource = dialog.FileName;
+                    ShowProfileImagePreview();
+                }
+            }
+        }
+
+        private void RemoveImageButtonClick(object sender, EventArgs e)
+        {
+            profileImagePath = null;
+            pendingProfileImageSource = null;
+            ShowProfileImagePreview();
+        }
+
+        private string PrepareProfileImagePath()
+        {
+            if (!string.IsNullOrWhiteSpace(pendingProfileImageSource))
+            {
+                profileImagePath = ImageAssetHelper.ImportUserImage(
+                    pendingProfileImageSource,
+                    "freelancer-" + freelancerId);
+                pendingProfileImageSource = null;
+            }
+
+            return profileImagePath;
+        }
+
+        private void ShowProfileImagePreview()
+        {
+            if (profileImagePreview == null)
+            {
+                return;
+            }
+
+            if (profileImagePreview.Image != null)
+            {
+                profileImagePreview.Image.Dispose();
+            }
+
+            string previewPath = !string.IsNullOrWhiteSpace(pendingProfileImageSource)
+                ? pendingProfileImageSource
+                : profileImagePath;
+
+            profileImagePreview.Image = ImageAssetHelper.LoadAvatar(
+                previewPath,
+                txtFullName == null ? "SkillHub Freelancer" : txtFullName.Text,
+                profileImagePreview.Width);
         }
     }
 }

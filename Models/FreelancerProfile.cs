@@ -12,6 +12,8 @@ namespace SkillHub.Models
 
         public string Skills { get; set; }
 
+        public string ProfileImagePath { get; set; }
+
         public bool IsVerified { get; set; }
 
         public decimal AverageRating { get; set; }

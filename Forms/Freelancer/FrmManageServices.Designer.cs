@@ -163,7 +163,7 @@
                 new System.Drawing.Size(1200, 800);
 
             this.MinimumSize =
-                new System.Drawing.Size(1080, 720);
+                new System.Drawing.Size(1180, 720);
 
             this.StartPosition =
                 System.Windows.Forms.FormStartPosition.CenterParent;

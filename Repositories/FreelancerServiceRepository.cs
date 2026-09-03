@@ -29,6 +29,7 @@ namespace SkillHub.Repositories
                         c.CategoryName,
                         s.Title,
                         s.Description,
+                        s.ImagePath,
                         s.Price,
                         s.DeliveryDays,
                         s.AvailableSlots,
@@ -70,6 +71,11 @@ namespace SkillHub.Repositories
 
                                 Description =
                                     reader["Description"].ToString(),
+
+                                ImagePath =
+                                    reader["ImagePath"] == DBNull.Value
+                                        ? string.Empty
+                                        : reader["ImagePath"].ToString(),
 
                                 Price =
                                     Convert.ToDecimal(reader["Price"]),
@@ -149,6 +155,7 @@ namespace SkillHub.Repositories
                         CategoryId,
                         Title,
                         Description,
+                        ImagePath,
                         Price,
                         DeliveryDays,
                         AvailableSlots,
@@ -161,6 +168,7 @@ namespace SkillHub.Repositories
                         @CategoryId,
                         @Title,
                         @Description,
+                        @ImagePath,
                         @Price,
                         @DeliveryDays,
                         @AvailableSlots,
@@ -182,6 +190,11 @@ namespace SkillHub.Repositories
 
                     command.Parameters.Add("@Description", SqlDbType.NVarChar, 1500).Value =
                         service.Description;
+
+                    command.Parameters.Add("@ImagePath", SqlDbType.NVarChar, 300).Value =
+                        string.IsNullOrWhiteSpace(service.ImagePath)
+                            ? (object)DBNull.Value
+                            : service.ImagePath;
 
                     SqlParameter priceParameter =
                         command.Parameters.Add("@Price", SqlDbType.Decimal);
@@ -218,6 +231,7 @@ namespace SkillHub.Repositories
                         CategoryId = @CategoryId,
                         Title = @Title,
                         Description = @Description,
+                        ImagePath = @ImagePath,
                         Price = @Price,
                         DeliveryDays = @DeliveryDays,
                         AvailableSlots = @AvailableSlots,
@@ -242,6 +256,11 @@ namespace SkillHub.Repositories
 
                     command.Parameters.Add("@Description", SqlDbType.NVarChar, 1500).Value =
                         service.Description;
+
+                    command.Parameters.Add("@ImagePath", SqlDbType.NVarChar, 300).Value =
+                        string.IsNullOrWhiteSpace(service.ImagePath)
+                            ? (object)DBNull.Value
+                            : service.ImagePath;
 
                     SqlParameter priceParameter =
                         command.Parameters.Add("@Price", SqlDbType.Decimal);

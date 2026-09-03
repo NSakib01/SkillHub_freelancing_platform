@@ -29,13 +29,13 @@ namespace SkillHub.Forms.Freelancer
             // ========================================================
 
             AddMainCardWithAction(
-                "Your published service listings",
+                "Your service catalogue",
                 ReadCount(
                     "SELECT COUNT(*) " +
                     "FROM dbo.Services " +
                     "WHERE FreelancerId = @UserId;",
                     UserSession.UserId)
-                + " software-service listing(s) currently belong to your account.",
+                + " service listing(s) are available in your freelancer workspace.",
                 "Manage Services",
                 ManageServicesClick);
 
@@ -44,7 +44,7 @@ namespace SkillHub.Forms.Freelancer
             // ========================================================
 
             AddMainCardWithAction(
-                "Your active orders",
+                "Projects requiring attention",
                 ReadCount(
                     "SELECT COUNT(*) " +
                     "FROM dbo.Orders " +
@@ -52,8 +52,7 @@ namespace SkillHub.Forms.Freelancer
                     "AND OrderStatus IN " +
                     "(N'Placed', N'In Progress', N'Delivered');",
                     UserSession.UserId)
-                + " order(s) are waiting for freelancer processing "
-                + "or client approval.",
+                + " active order(s) are waiting for progress or client approval.",
                 "Manage Orders",
                 ManageOrdersClick);
 
@@ -94,23 +93,23 @@ namespace SkillHub.Forms.Freelancer
             // WORKSPACE
             // ========================================================
 
-            AddMainCard(
-                "Freelancer workspace",
-                "Manage your profile, publish software services, "
-                + "process client orders and manage your wallet.");
+            AddMainCardWithAction(
+                "Build a stronger public profile",
+                "Add a professional portrait, focused title, biography and skills so clients can confidently choose your services.",
+                "Edit Profile",
+                EditProfileClick);
 
             // ========================================================
             // SIDE INFORMATION
             // ========================================================
 
             AddSideCard(
-                "Freelancer module",
-                "Profile • Services • Orders • Wallet • Withdrawals");
+                "Your freelancer toolkit",
+                "Profile • Service images • Orders • Wallet • Withdrawals");
 
             AddSideCard(
-                "Security",
-                "All freelancer data is loaded using the signed-in "
-                + "UserSession.UserId.");
+                "Publishing tip",
+                "Use a clear service image and a detailed description. Clients can now open every listing before adding it to their cart.");
         }
 
         // ============================================================
@@ -125,6 +124,12 @@ namespace SkillHub.Forms.Freelancer
             {
                 profile.ShowDialog(this);
             }
+        }
+
+        private void EditProfileClick(object sender, EventArgs e)
+        {
+            OpenProfile();
+            RefreshIdentity();
         }
 
         // ============================================================
@@ -185,38 +190,10 @@ namespace SkillHub.Forms.Freelancer
         {
             try
             {
-                decimal? balance =
-                    ReadDecimal(
-                        "SELECT AvailableBalance " +
-                        "FROM dbo.vw_FreelancerWalletBalances " +
-                        "WHERE FreelancerId = @UserId;",
-                        UserSession.UserId);
-
-                if (!balance.HasValue)
+                using (FrmWallet wallet = new FrmWallet(UserSession.UserId))
                 {
-                    MessageBox.Show(
-                        this,
-                        "Your wallet balance could not be loaded.",
-                        "Wallet",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning);
-
-                    return;
+                    wallet.ShowDialog(this);
                 }
-
-                MessageBox.Show(
-                    this,
-                    "Freelancer Wallet\r\n"
-                    + "────────────────────────\r\n\r\n"
-                    + "Available Balance\r\n"
-                    + "BDT "
-                    + balance.Value.ToString("N2")
-                    + "\r\n\r\n"
-                    + "This is the amount currently available "
-                    + "for withdrawal.",
-                    "Wallet Balance",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
             }
             catch (Exception exception)
             {

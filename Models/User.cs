@@ -22,6 +22,8 @@ namespace SkillHub.Models
 
         public string Address { get; set; }
 
+        public string ProfileImagePath { get; set; }
+
         public string Status { get; set; }
 
         public DateTime CreatedAt { get; set; }

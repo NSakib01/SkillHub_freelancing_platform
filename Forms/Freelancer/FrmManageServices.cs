@@ -1,6 +1,7 @@
 ﻿using SkillHub.Models;
 using SkillHub.Repositories;
 using SkillHub.Utilities;
+using SkillHub.UI;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,6 +24,11 @@ namespace SkillHub.Forms.Freelancer
         // ============================================================
 
         private int _selectedServiceId = 0;
+        private PictureBox _serviceImagePreview;
+        private Button _chooseServiceImageButton;
+        private Button _removeServiceImageButton;
+        private string _serviceImagePath;
+        private string _pendingServiceImageSource;
 
         // ============================================================
         // CONSTRUCTOR
@@ -31,6 +37,8 @@ namespace SkillHub.Forms.Freelancer
         public FrmManageServices()
         {
             InitializeComponent();
+
+            ConfigureImageEditor();
 
             _serviceRepository =
                 new FreelancerServiceRepository();
@@ -50,6 +58,60 @@ namespace SkillHub.Forms.Freelancer
             return LicenseManager.UsageMode ==
                        LicenseUsageMode.Designtime
                    || DesignMode;
+        }
+
+        private void ConfigureImageEditor()
+        {
+            Label imageLabel = new Label
+            {
+                Text = "Service Image",
+                AutoSize = true,
+                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(51, 65, 85),
+                Location = new Point(930, 62)
+            };
+
+            _serviceImagePreview = new PictureBox
+            {
+                Location = new Point(930, 85),
+                Size = new Size(175, 116),
+                SizeMode = PictureBoxSizeMode.Zoom,
+                BackColor = Color.FromArgb(239, 244, 250),
+                BorderStyle = BorderStyle.FixedSingle
+            };
+
+            _chooseServiceImageButton = new Button
+            {
+                Text = "Choose Image",
+                Location = new Point(930, 207),
+                Size = new Size(105, 31),
+                BackColor = Color.FromArgb(37, 99, 235),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Cursor = Cursors.Hand
+            };
+            _chooseServiceImageButton.FlatAppearance.BorderSize = 0;
+            _chooseServiceImageButton.Click += ChooseServiceImageClick;
+
+            _removeServiceImageButton = new Button
+            {
+                Text = "Remove",
+                Location = new Point(1041, 207),
+                Size = new Size(64, 31),
+                BackColor = Color.White,
+                ForeColor = Color.FromArgb(100, 116, 139),
+                FlatStyle = FlatStyle.Flat,
+                Cursor = Cursors.Hand
+            };
+            _removeServiceImageButton.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
+            _removeServiceImageButton.Click += RemoveServiceImageClick;
+
+            editorPanel.Controls.Add(imageLabel);
+            editorPanel.Controls.Add(_serviceImagePreview);
+            editorPanel.Controls.Add(_chooseServiceImageButton);
+            editorPanel.Controls.Add(_removeServiceImageButton);
+
+            ShowServiceImagePreview();
         }
 
         // ============================================================
@@ -227,6 +289,10 @@ namespace SkillHub.Forms.Freelancer
 
             chkActive.Checked =
                 service.IsActive;
+
+            _serviceImagePath = service.ImagePath;
+            _pendingServiceImageSource = null;
+            ShowServiceImagePreview(service.Title, service.CategoryName);
 
             lblSelectedService.Text =
                 "Selected Service #" +
@@ -498,6 +564,10 @@ namespace SkillHub.Forms.Freelancer
 
             chkActive.Checked = true;
 
+            _serviceImagePath = null;
+            _pendingServiceImageSource = null;
+            ShowServiceImagePreview();
+
             if (cmbCategory.Items.Count > 0)
             {
                 cmbCategory.SelectedIndex = 0;
@@ -696,8 +766,72 @@ namespace SkillHub.Forms.Freelancer
                         nudAvailableSlots.Value),
 
                 IsActive =
-                    chkActive.Checked
+                    chkActive.Checked,
+
+                ImagePath =
+                    PrepareServiceImagePath()
             };
+        }
+
+        private void ChooseServiceImageClick(object sender, EventArgs e)
+        {
+            using (OpenFileDialog dialog = new OpenFileDialog())
+            {
+                dialog.Title = "Choose a service image";
+                dialog.Filter = "Image files|*.png;*.jpg;*.jpeg;*.bmp|All files|*.*";
+                dialog.CheckFileExists = true;
+
+                if (dialog.ShowDialog(this) == DialogResult.OK)
+                {
+                    _pendingServiceImageSource = dialog.FileName;
+                    ShowServiceImagePreview(txtTitle.Text, Convert.ToString(cmbCategory.Text));
+                }
+            }
+        }
+
+        private void RemoveServiceImageClick(object sender, EventArgs e)
+        {
+            _serviceImagePath = null;
+            _pendingServiceImageSource = null;
+            ShowServiceImagePreview(txtTitle.Text, Convert.ToString(cmbCategory.Text));
+        }
+
+        private string PrepareServiceImagePath()
+        {
+            if (!string.IsNullOrWhiteSpace(_pendingServiceImageSource))
+            {
+                _serviceImagePath = ImageAssetHelper.ImportUserImage(
+                    _pendingServiceImageSource,
+                    "service-" + UserSession.UserId);
+                _pendingServiceImageSource = null;
+            }
+
+            return _serviceImagePath;
+        }
+
+        private void ShowServiceImagePreview(
+            string title = "New SkillHub service",
+            string category = "Technology service")
+        {
+            if (_serviceImagePreview == null)
+            {
+                return;
+            }
+
+            if (_serviceImagePreview.Image != null)
+            {
+                _serviceImagePreview.Image.Dispose();
+            }
+
+            string previewPath = !string.IsNullOrWhiteSpace(_pendingServiceImageSource)
+                ? _pendingServiceImageSource
+                : _serviceImagePath;
+
+            _serviceImagePreview.Image = ImageAssetHelper.LoadServiceImage(
+                previewPath,
+                title,
+                category,
+                _serviceImagePreview.Size);
         }
 
         // ============================================================

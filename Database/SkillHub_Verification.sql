@@ -60,6 +60,12 @@ BEGIN
     THROW 52004, 'At least 13 approved software-service categories are required.', 1;
 END;
 
+IF COL_LENGTH(N'dbo.Users', N'ProfileImagePath') IS NULL
+   OR COL_LENGTH(N'dbo.Services', N'ImagePath') IS NULL
+BEGIN
+    THROW 52009, 'The marketplace image columns are missing.', 1;
+END;
+
 IF NOT EXISTS
 (
     SELECT 1 FROM dbo.PlatformSettings
@@ -68,6 +74,33 @@ IF NOT EXISTS
 )
 BEGIN
     THROW 52005, 'A valid commission-percentage platform setting is required.', 1;
+END;
+
+IF
+(
+    SELECT COUNT(*)
+    FROM dbo.Users AS users
+    INNER JOIN dbo.Roles AS roles ON roles.RoleId = users.RoleId
+    WHERE roles.RoleName = N'Freelancer' AND users.Status = N'Active'
+) < 6
+BEGIN
+    THROW 52010, 'At least six active freelancer demo accounts are required.', 1;
+END;
+
+IF
+(
+    SELECT COUNT(*)
+    FROM dbo.Users AS users
+    INNER JOIN dbo.Roles AS roles ON roles.RoleId = users.RoleId
+    WHERE roles.RoleName = N'Client' AND users.Status = N'Active'
+) < 4
+BEGIN
+    THROW 52011, 'At least four active client demo accounts are required.', 1;
+END;
+
+IF (SELECT COUNT(*) FROM dbo.Services WHERE IsActive = 1 AND ImagePath IS NOT NULL) < 13
+BEGIN
+    THROW 52012, 'At least thirteen active services with images are required.', 1;
 END;
 
 IF EXISTS
@@ -134,6 +167,7 @@ PRINT N'PASS: Admin, Freelancer and Client roles exist.';
 PRINT N'PASS: all software-service categories are seeded.';
 PRINT N'PASS: commission setting and hashed demo accounts exist.';
 PRINT N'PASS: shared views and business-integrity triggers exist.';
+PRINT N'PASS: six freelancers, four clients and thirteen visual services exist.';
 
 SELECT
     tables.name AS TableName,
@@ -150,7 +184,7 @@ SELECT RoleId, RoleName, Description
 FROM dbo.Roles
 ORDER BY RoleId;
 
-SELECT UserId, RoleName, UserType, FullName, Email, Status
+SELECT UserId, RoleName, UserType, FullName, Email, ProfileImagePath, Status
 FROM dbo.vw_UserAccounts
 ORDER BY UserId;
 
@@ -158,7 +192,8 @@ SELECT CategoryCode, CategoryName, IsActive
 FROM dbo.Categories
 ORDER BY CategoryCode;
 
-SELECT ServiceId, FreelancerName, CategoryName, Title, Price, DeliveryDays, AvailableSlots
+SELECT ServiceId, FreelancerName, CategoryName, Title, ServiceImagePath,
+       Price, DeliveryDays, AvailableSlots
 FROM dbo.vw_ServiceCatalog
 ORDER BY ServiceId;
 

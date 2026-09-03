@@ -77,6 +77,13 @@ BEGIN
 END;
 GO
 
+IF COL_LENGTH(N'dbo.Users', N'ProfileImagePath') IS NULL
+BEGIN
+    ALTER TABLE dbo.Users
+        ADD ProfileImagePath NVARCHAR(300) NULL;
+END;
+GO
+
 IF OBJECT_ID(N'dbo.ClientProfiles', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.ClientProfiles
@@ -171,6 +178,13 @@ BEGIN
         CONSTRAINT CK_Services_DeliveryDays CHECK (DeliveryDays > 0),
         CONSTRAINT CK_Services_AvailableSlots CHECK (AvailableSlots >= 0)
     );
+END;
+GO
+
+IF COL_LENGTH(N'dbo.Services', N'ImagePath') IS NULL
+BEGIN
+    ALTER TABLE dbo.Services
+        ADD ImagePath NVARCHAR(300) NULL;
 END;
 GO
 
@@ -729,6 +743,64 @@ BEGIN TRY
         );
     END;
 
+    UPDATE dbo.Users
+    SET ProfileImagePath = COALESCE(ProfileImagePath, N'Assets\Profiles\rafi-ahmed.png')
+    WHERE Email = N'freelancer@skillhub.local';
+
+    INSERT INTO dbo.Users
+    (
+        RoleId, FullName, Email, PasswordHash, Phone, Address,
+        ProfileImagePath, Status
+    )
+    SELECT
+        @FreelancerRoleId,
+        seed.FullName,
+        seed.Email,
+        N'PBKDF2-SHA256$120000$U2tpbGxIdWJGcmVlU2VlZCE=$xJKS/0u8o/XlNX/uUCeaWRrO6N+lukvS7XacweJGCKk=',
+        seed.Phone,
+        N'Dhaka, Bangladesh',
+        seed.ProfileImagePath,
+        N'Active'
+    FROM
+    (
+        VALUES
+            (N'Ayesha Karim', N'ayesha@skillhub.local', N'+8801700000011', N'Assets\Profiles\ayesha-karim.png'),
+            (N'Tanvir Hasan', N'tanvir@skillhub.local', N'+8801700000012', N'Assets\Profiles\tanvir-hasan.png'),
+            (N'Nusrat Jahan', N'nusrat@skillhub.local', N'+8801700000013', N'Assets\Profiles\nusrat-jahan.png'),
+            (N'Farhan Kabir', N'farhan@skillhub.local', N'+8801700000014', N'Assets\Profiles\farhan-kabir.png'),
+            (N'Samira Islam', N'samira@skillhub.local', N'+8801700000015', N'Assets\Profiles\samira-islam.png')
+    ) AS seed (FullName, Email, Phone, ProfileImagePath)
+    WHERE NOT EXISTS
+    (
+        SELECT 1 FROM dbo.Users AS existing
+        WHERE existing.Email = seed.Email
+    );
+
+    INSERT INTO dbo.Users
+    (
+        RoleId, FullName, Email, PasswordHash, Phone, Address, Status
+    )
+    SELECT
+        @ClientRoleId,
+        seed.FullName,
+        seed.Email,
+        N'PBKDF2-SHA256$120000$U2tpbGxIdWJDbGllbnRTZWVk$wwl7WpS2ZgDutEYYKubuYqwE7z2Kh8QaX3hXz6LK5oM=',
+        seed.Phone,
+        N'Dhaka, Bangladesh',
+        N'Active'
+    FROM
+    (
+        VALUES
+            (N'Mahin Chowdhury', N'mahin.client@skillhub.local', N'+8801700000021'),
+            (N'Tasnim Akter', N'tasnim.client@skillhub.local', N'+8801700000022'),
+            (N'Arif Hossain', N'arif.client@skillhub.local', N'+8801700000023')
+    ) AS seed (FullName, Email, Phone)
+    WHERE NOT EXISTS
+    (
+        SELECT 1 FROM dbo.Users AS existing
+        WHERE existing.Email = seed.Email
+    );
+
     DECLARE @DemoFreelancerId INT =
         (SELECT UserId FROM dbo.Users WHERE Email = N'freelancer@skillhub.local');
     DECLARE @DemoClientId INT =
@@ -754,6 +826,70 @@ BEGIN TRY
         );
     END;
 
+    UPDATE dbo.FreelancerProfiles
+    SET AverageRating = 4.90
+    WHERE UserId = @DemoFreelancerId
+      AND AverageRating = 0.00;
+
+    INSERT INTO dbo.FreelancerProfiles
+    (
+        UserId, ProfessionalTitle, Biography, Skills,
+        IsVerified, AverageRating
+    )
+    SELECT
+        users.UserId,
+        seed.ProfessionalTitle,
+        seed.Biography,
+        seed.Skills,
+        1,
+        seed.AverageRating
+    FROM
+    (
+        VALUES
+            (
+                N'ayesha@skillhub.local',
+                N'Frontend and UI/UX Engineer',
+                N'Creates accessible web interfaces and practical product experiences for startups and growing businesses.',
+                N'React, JavaScript, HTML, CSS, Figma, UI/UX, Design Systems',
+                CAST(4.85 AS DECIMAL(3, 2))
+            ),
+            (
+                N'tanvir@skillhub.local',
+                N'Backend and Cloud Developer',
+                N'Builds secure APIs, scalable server applications and reliable SQL Server database solutions.',
+                N'C#, ASP.NET Core, REST API, SQL Server, Azure, System Design',
+                CAST(4.75 AS DECIMAL(3, 2))
+            ),
+            (
+                N'nusrat@skillhub.local',
+                N'Data Analyst and QA Specialist',
+                N'Turns raw business data into clear decisions and tests software through structured, reproducible quality checks.',
+                N'Power BI, Excel, SQL, Python, Manual Testing, Test Cases, Bug Reports',
+                CAST(4.80 AS DECIMAL(3, 2))
+            ),
+            (
+                N'farhan@skillhub.local',
+                N'Cybersecurity Engineer',
+                N'Performs authorized security reviews and helps teams harden applications, accounts and deployment settings.',
+                N'Web Security, Secure Code Review, OWASP, Network Security, Hardening',
+                CAST(4.70 AS DECIMAL(3, 2))
+            ),
+            (
+                N'samira@skillhub.local',
+                N'Android and iOS Application Developer',
+                N'Designs and develops clean mobile applications with practical navigation, API integration and responsive layouts.',
+                N'Android, Kotlin, Flutter, iOS Prototyping, Firebase, REST API',
+                CAST(4.88 AS DECIMAL(3, 2))
+            )
+    ) AS seed (Email, ProfessionalTitle, Biography, Skills, AverageRating)
+    INNER JOIN dbo.Users AS users
+        ON users.Email = seed.Email
+    WHERE NOT EXISTS
+    (
+        SELECT 1 FROM dbo.FreelancerProfiles AS existing
+        WHERE existing.UserId = users.UserId
+    );
+
     IF NOT EXISTS
     (
         SELECT 1 FROM dbo.ClientProfiles
@@ -778,16 +914,49 @@ BEGIN TRY
         VALUES (@DemoClientId);
     END;
 
+    INSERT INTO dbo.ClientProfiles (UserId, CompanyName, Notes)
+    SELECT users.UserId, seed.CompanyName, seed.Notes
+    FROM
+    (
+        VALUES
+            (N'mahin.client@skillhub.local', N'GreenCart Bangladesh', N'E-commerce client seeking web and backend services.'),
+            (N'tasnim.client@skillhub.local', N'CareBridge Health', N'Healthcare startup client seeking data and mobile services.'),
+            (N'arif.client@skillhub.local', N'Dhaka Startup Studio', N'Startup client seeking design, QA and cybersecurity services.')
+    ) AS seed (Email, CompanyName, Notes)
+    INNER JOIN dbo.Users AS users
+        ON users.Email = seed.Email
+    WHERE NOT EXISTS
+    (
+        SELECT 1 FROM dbo.ClientProfiles AS existing
+        WHERE existing.UserId = users.UserId
+    );
+
+    INSERT INTO dbo.Carts (ClientId)
+    SELECT users.UserId
+    FROM dbo.Users AS users
+    WHERE users.Email IN
+    (
+        N'mahin.client@skillhub.local',
+        N'tasnim.client@skillhub.local',
+        N'arif.client@skillhub.local'
+    )
+    AND NOT EXISTS
+    (
+        SELECT 1 FROM dbo.Carts AS existing
+        WHERE existing.ClientId = users.UserId
+    );
+
     INSERT INTO dbo.Services
     (
         FreelancerId, CategoryId, Title, Description,
-        Price, DeliveryDays, AvailableSlots, IsActive
+        ImagePath, Price, DeliveryDays, AvailableSlots, IsActive
     )
     SELECT
         @DemoFreelancerId,
         categories.CategoryId,
         seed.Title,
         seed.Description,
+        seed.ImagePath,
         seed.Price,
         seed.DeliveryDays,
         seed.AvailableSlots,
@@ -798,24 +967,27 @@ BEGIN TRY
             (
                 N'DEV-01',
                 N'Build a C# WinForms Inventory Application',
-                N'Complete desktop inventory solution using C# and SQL Server.',
+                N'Complete desktop inventory solution using C# and SQL Server, including secure login, product management, stock tracking, reports and a clean handover.',
+                N'Assets\Services\desktop-development.png',
                 CAST(5000.00 AS DECIMAL(18, 2)), 7, 4
             ),
             (
                 N'DEV-03',
                 N'Design a SQL Server Database and API Backend',
-                N'Normalized schema, secure queries and backend integration.',
+                N'Normalized SQL Server schema, secure parameterized queries, stored procedures and backend integration prepared for a desktop or web application.',
+                N'Assets\Services\backend-api.png',
                 CAST(3500.00 AS DECIMAL(18, 2)), 5, 3
             ),
             (
                 N'EMB-01',
                 N'Develop ESP32 Firmware and Embedded Dashboard',
-                N'ESP32 firmware with sensor handling and a local control interface.',
+                N'ESP32 firmware with sensor handling, serial diagnostics and a local dashboard for monitoring and controlling the connected hardware.',
+                N'Assets\Services\embedded-iot.png',
                 CAST(6000.00 AS DECIMAL(18, 2)), 10, 2
             )
     ) AS seed
     (
-        CategoryCode, Title, Description, Price, DeliveryDays, AvailableSlots
+        CategoryCode, Title, Description, ImagePath, Price, DeliveryDays, AvailableSlots
     )
     INNER JOIN dbo.Categories AS categories
         ON categories.CategoryCode = seed.CategoryCode
@@ -823,6 +995,124 @@ BEGIN TRY
     (
         SELECT 1 FROM dbo.Services AS existing
         WHERE existing.FreelancerId = @DemoFreelancerId
+          AND existing.Title = seed.Title
+    );
+
+    UPDATE services
+    SET ImagePath = seed.ImagePath
+    FROM dbo.Services AS services
+    INNER JOIN
+    (
+        VALUES
+            (N'Build a C# WinForms Inventory Application', N'Assets\Services\desktop-development.png'),
+            (N'Design a SQL Server Database and API Backend', N'Assets\Services\backend-api.png'),
+            (N'Develop ESP32 Firmware and Embedded Dashboard', N'Assets\Services\embedded-iot.png')
+    ) AS seed (Title, ImagePath)
+        ON seed.Title = services.Title
+    WHERE services.FreelancerId = @DemoFreelancerId
+      AND services.ImagePath IS NULL;
+
+    INSERT INTO dbo.Services
+    (
+        FreelancerId, CategoryId, Title, Description, ImagePath,
+        Price, DeliveryDays, AvailableSlots, IsActive
+    )
+    SELECT
+        freelancers.UserId,
+        categories.CategoryId,
+        seed.Title,
+        seed.Description,
+        seed.ImagePath,
+        seed.Price,
+        seed.DeliveryDays,
+        seed.AvailableSlots,
+        1
+    FROM
+    (
+        VALUES
+            (
+                N'ayesha@skillhub.local', N'DEV-02',
+                N'Build a Responsive React Business Dashboard',
+                N'A responsive and accessible frontend dashboard with reusable components, clear navigation, charts and polished desktop and mobile layouts.',
+                N'Assets\Services\frontend-web.png',
+                CAST(4200.00 AS DECIMAL(18, 2)), 6, 5
+            ),
+            (
+                N'ayesha@skillhub.local', N'DES-02',
+                N'Design a Complete Mobile App UI/UX Prototype',
+                N'A complete mobile product design with user flow, wireframes, polished screens, reusable components and an interactive presentation-ready prototype.',
+                N'Assets\Services\uiux-design.png',
+                CAST(3000.00 AS DECIMAL(18, 2)), 4, 4
+            ),
+            (
+                N'tanvir@skillhub.local', N'DEV-03',
+                N'Develop a Secure ASP.NET Core REST API',
+                N'A structured REST API with validation, authentication-ready architecture, SQL Server integration, error handling and clear endpoint documentation.',
+                N'Assets\Services\backend-api.png',
+                CAST(5500.00 AS DECIMAL(18, 2)), 7, 4
+            ),
+            (
+                N'tanvir@skillhub.local', N'DEV-03',
+                N'Optimize a SQL Server Database for Performance',
+                N'Database review covering slow queries, indexing, normalized structures and safe query improvements with a concise performance report.',
+                N'Assets\Services\backend-api.png',
+                CAST(3200.00 AS DECIMAL(18, 2)), 3, 5
+            ),
+            (
+                N'nusrat@skillhub.local', N'DAT-01',
+                N'Build an Interactive Power BI Analytics Dashboard',
+                N'Cleaned and modeled business data presented through an interactive dashboard with meaningful KPIs, filters, charts and decision-focused findings.',
+                N'Assets\Services\data-analytics.png',
+                CAST(2800.00 AS DECIMAL(18, 2)), 4, 6
+            ),
+            (
+                N'nusrat@skillhub.local', N'QA-01',
+                N'Create a Complete QA Test Plan and Bug Report',
+                N'A structured manual testing package with test scenarios, test cases, evidence, severity-based defect reports and a final quality summary.',
+                N'Assets\Services\quality-assurance.png',
+                CAST(2200.00 AS DECIMAL(18, 2)), 3, 6
+            ),
+            (
+                N'farhan@skillhub.local', N'SEC-01',
+                N'Perform an Authorized Web Application Security Review',
+                N'An authorized review of common web risks, account controls and deployment settings with prioritized findings and practical remediation guidance.',
+                N'Assets\Services\cybersecurity.png',
+                CAST(6500.00 AS DECIMAL(18, 2)), 8, 3
+            ),
+            (
+                N'farhan@skillhub.local', N'SEC-01',
+                N'Review and Harden a C# Application',
+                N'A focused secure code review covering input validation, database access, secrets, authentication flow and defensive configuration improvements.',
+                N'Assets\Services\cybersecurity.png',
+                CAST(4500.00 AS DECIMAL(18, 2)), 5, 4
+            ),
+            (
+                N'samira@skillhub.local', N'MOB-01',
+                N'Develop an Android Business Application',
+                N'A clean Android business application with responsive screens, form validation, local or API-backed data and practical user navigation.',
+                N'Assets\Services\mobile-apps.png',
+                CAST(7000.00 AS DECIMAL(18, 2)), 10, 3
+            ),
+            (
+                N'samira@skillhub.local', N'MOB-02',
+                N'Create an iOS App Prototype and Interface',
+                N'A presentation-ready iOS application prototype with consistent screens, realistic navigation, reusable visual components and developer handoff notes.',
+                N'Assets\Services\mobile-apps.png',
+                CAST(5200.00 AS DECIMAL(18, 2)), 7, 4
+            )
+    ) AS seed
+    (
+        FreelancerEmail, CategoryCode, Title, Description, ImagePath,
+        Price, DeliveryDays, AvailableSlots
+    )
+    INNER JOIN dbo.Users AS freelancers
+        ON freelancers.Email = seed.FreelancerEmail
+    INNER JOIN dbo.Categories AS categories
+        ON categories.CategoryCode = seed.CategoryCode
+    WHERE NOT EXISTS
+    (
+        SELECT 1 FROM dbo.Services AS existing
+        WHERE existing.FreelancerId = freelancers.UserId
           AND existing.Title = seed.Title
     );
 
@@ -857,6 +1147,7 @@ SELECT
     users.Email,
     users.Phone,
     users.Address,
+    users.ProfileImagePath,
     users.Status,
     users.CreatedAt,
     users.UpdatedAt,
@@ -873,6 +1164,9 @@ SELECT
     services.FreelancerId,
     freelancer.FullName AS FreelancerName,
     profiles.ProfessionalTitle,
+    profiles.Biography AS FreelancerBiography,
+    profiles.Skills AS FreelancerSkills,
+    freelancer.ProfileImagePath AS FreelancerProfileImagePath,
     profiles.IsVerified,
     profiles.AverageRating,
     categories.CategoryId,
@@ -880,6 +1174,7 @@ SELECT
     categories.CategoryName,
     services.Title,
     services.Description,
+    services.ImagePath AS ServiceImagePath,
     services.Price,
     services.DeliveryDays,
     services.AvailableSlots,

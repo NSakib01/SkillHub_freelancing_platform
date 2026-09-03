@@ -12,9 +12,29 @@ namespace SkillHub.Models
 
         public string FreelancerName { get; set; }
 
+        public string ProfessionalTitle { get; set; }
+
+        public string FreelancerBiography { get; set; }
+
+        public string FreelancerSkills { get; set; }
+
+        public string FreelancerProfileImagePath { get; set; }
+
+        public bool IsVerified { get; set; }
+
+        public decimal AverageRating { get; set; }
+
+        public int CategoryId { get; set; }
+
+        public string CategoryCode { get; set; }
+
+        public string CategoryName { get; set; }
+
         public string Title { get; set; }
 
         public string Description { get; set; }
+
+        public string ServiceImagePath { get; set; }
 
         public decimal Price { get; set; }
 
@@ -23,6 +43,8 @@ namespace SkillHub.Models
         public int AvailableSlots { get; set; }
 
         public bool IsActive { get; set; }
+
+        public System.DateTime CreatedAt { get; set; }
 
         public bool IsAvailable
         {

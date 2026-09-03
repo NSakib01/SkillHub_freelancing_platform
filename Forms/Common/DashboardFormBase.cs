@@ -3,12 +3,14 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using SkillHub.Data;
 using SkillHub.Forms.Freelancer;
 using SkillHub.Models;
 using SkillHub.Services;
 using SkillHub.Utilities;
+using SkillHub.UI;
 
 namespace SkillHub.Forms.Common
 {
@@ -20,6 +22,7 @@ namespace SkillHub.Forms.Common
         private FlowLayoutPanel _mainContent;
         private FlowLayoutPanel _sideContent;
         private Label _identityLabel;
+        private PictureBox _avatarPicture;
 
         protected DashboardFormBase(
             AuthenticationService authentication,
@@ -77,12 +80,19 @@ namespace SkillHub.Forms.Common
             EventHandler actionHandler)
         {
             Panel card =
-                UiFactory.CreateCard(570, 118);
+                UiFactory.CreateCard(570, 128);
+
+            Panel accentBar = new Panel
+            {
+                BackColor = MarketplaceTheme.Accent,
+                Location = new Point(0, 18),
+                Size = new Size(5, 92)
+            };
 
             Label titleLabel = new Label
             {
                 AutoSize = false,
-                Width = 360,
+                Width = 350,
                 Height = 27,
                 Text = title,
                 Font = new Font(
@@ -90,17 +100,17 @@ namespace SkillHub.Forms.Common
                     11.5F,
                     FontStyle.Bold),
                 ForeColor = UiFactory.PrimaryDark,
-                Location = new Point(20, 15)
+                Location = new Point(28, 17)
             };
 
             Label descriptionLabel = new Label
             {
                 AutoSize = false,
-                Width = 360,
-                Height = 45,
+                Width = 345,
+                Height = 52,
                 Text = description,
                 ForeColor = UiFactory.MutedText,
-                Location = new Point(21, 46)
+                Location = new Point(29, 49)
             };
 
             Button actionButton =
@@ -111,10 +121,11 @@ namespace SkillHub.Forms.Common
                     40);
 
             actionButton.Location =
-                new Point(405, 38);
+                new Point(397, 43);
 
             actionButton.Click += actionHandler;
 
+            card.Controls.Add(accentBar);
             card.Controls.Add(titleLabel);
             card.Controls.Add(descriptionLabel);
             card.Controls.Add(actionButton);
@@ -279,6 +290,20 @@ namespace SkillHub.Forms.Common
                     + UserSession.RoleName
                     + "   |   User ID "
                     + UserSession.UserId;
+
+                if (_avatarPicture != null)
+                {
+                    Image previousImage = _avatarPicture.Image;
+                    _avatarPicture.Image = ImageAssetHelper.LoadAvatar(
+                        UserSession.CurrentUser.ProfileImagePath,
+                        UserSession.FullName,
+                        _avatarPicture.Width);
+
+                    if (previousImage != null)
+                    {
+                        previousImage.Dispose();
+                    }
+                }
             }
         }
 
@@ -299,7 +324,7 @@ namespace SkillHub.Forms.Common
             shell.RowStyles.Add(
                 new RowStyle(
                     SizeType.Absolute,
-                    118F));
+                    132F));
 
             shell.RowStyles.Add(
                 new RowStyle(
@@ -314,12 +339,24 @@ namespace SkillHub.Forms.Common
                 new Panel
                 {
                     Dock = DockStyle.Fill,
-                    BackColor = UiFactory.PrimaryDark,
+                    BackColor = MarketplaceTheme.Navy,
                     Padding = new Padding(
                         34,
                         19,
                         22,
                         15)
+                };
+
+            _avatarPicture = new PictureBox
+                {
+                    Size = new Size(68, 68),
+                    Location = new Point(32, 27),
+                    SizeMode = PictureBoxSizeMode.StretchImage,
+                    BackColor = Color.Transparent,
+                    Image = ImageAssetHelper.LoadAvatar(
+                        UserSession.CurrentUser.ProfileImagePath,
+                        UserSession.FullName,
+                        68)
                 };
 
             Label brand =
@@ -332,7 +369,8 @@ namespace SkillHub.Forms.Common
                         "Segoe UI",
                         23F,
                         FontStyle.Bold),
-                    Location = new Point(34, 15)
+                    Location = new Point(118, 21),
+                    BackColor = Color.Transparent
                 };
 
             _identityLabel =
@@ -349,7 +387,8 @@ namespace SkillHub.Forms.Common
                             "Segoe UI",
                             10F),
                     Location =
-                        new Point(39, 67)
+                        new Point(121, 70),
+                    BackColor = Color.Transparent
                 };
 
             FlowLayoutPanel actions =
@@ -368,14 +407,14 @@ namespace SkillHub.Forms.Common
                         FlowDirection.RightToLeft,
                     WrapContents = false,
                     BackColor =
-                        UiFactory.PrimaryDark
+                        Color.Transparent
                 };
 
             header.SizeChanged += delegate
             {
                 actions.Left =
                     Math.Max(
-                        450,
+                            590,
                         header.ClientSize.Width
                         - actions.Width
                         - 16);
@@ -415,6 +454,19 @@ namespace SkillHub.Forms.Common
             actions.Controls.Add(passwordButton);
             actions.Controls.Add(profileButton);
 
+            header.Paint += delegate(object sender, PaintEventArgs arguments)
+            {
+                using (LinearGradientBrush brush = new LinearGradientBrush(
+                    header.ClientRectangle,
+                    MarketplaceTheme.Navy,
+                    UiFactory.Primary,
+                    15F))
+                {
+                    arguments.Graphics.FillRectangle(brush, header.ClientRectangle);
+                }
+            };
+
+            header.Controls.Add(_avatarPicture);
             header.Controls.Add(brand);
             header.Controls.Add(_identityLabel);
             header.Controls.Add(actions);
@@ -460,7 +512,7 @@ namespace SkillHub.Forms.Common
 
             Label welcome =
                 UiFactory.CreateCaption(
-                    "Signed in with an authorized account and a shared SQL Server session.");
+                    "Welcome back, " + UserSession.FullName + ". Your SkillHub workspace is ready.");
 
             welcome.Width = 580;
             welcome.Height = 40;
@@ -469,26 +521,20 @@ namespace SkillHub.Forms.Common
 
             Label foundationHeading =
                 UiFactory.CreateHeading(
-                    "Foundation Status",
+                    "Quick information",
                     17);
 
             _sideContent.Controls.Add(
                 foundationHeading);
 
             AddSideCard(
-                "Current session",
-                "User ID: "
-                + UserSession.UserId
-                + "\r\nRole: "
-                + UserSession.RoleName
-                + "\r\nLegacy user type: "
-                + UserSession.UserType);
+                "Your account",
+                UserSession.RoleName
+                + " access is active. Use My Profile to keep your public information current.");
 
             AddSideCard(
-                "Shared integration rule",
-                "Use UserSession.UserId in SQL parameters; "
-                + "never hardcode a user ID. Every module must "
-                + "reuse DatabaseConnection.");
+                "Secure workspace",
+                "Your services, orders and account actions are linked to the currently signed-in profile.");
 
             body.Controls.Add(
                 _mainContent,
@@ -553,11 +599,18 @@ namespace SkillHub.Forms.Common
                     width,
                     height);
 
+            Panel accentDot = new Panel
+            {
+                BackColor = MarketplaceTheme.Accent,
+                Location = new Point(20, 21),
+                Size = new Size(9, 9)
+            };
+
             Label titleLabel =
                 new Label
                 {
                     AutoSize = false,
-                    Width = width - 48,
+                    Width = width - 62,
                     Height = 27,
                     Text = title,
                     Font =
@@ -568,7 +621,7 @@ namespace SkillHub.Forms.Common
                     ForeColor =
                         UiFactory.PrimaryDark,
                     Location =
-                        new Point(20, 15)
+                        new Point(37, 14)
                 };
 
             Label descriptionLabel =
@@ -581,9 +634,10 @@ namespace SkillHub.Forms.Common
                     ForeColor =
                         UiFactory.MutedText,
                     Location =
-                        new Point(21, 46)
+                        new Point(22, 48)
                 };
 
+            card.Controls.Add(accentDot);
             card.Controls.Add(titleLabel);
             card.Controls.Add(descriptionLabel);
 
@@ -668,6 +722,17 @@ namespace SkillHub.Forms.Common
                 _authentication.Logout();
                 Close();
             }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && _avatarPicture != null && _avatarPicture.Image != null)
+            {
+                _avatarPicture.Image.Dispose();
+                _avatarPicture.Image = null;
+            }
+
+            base.Dispose(disposing);
         }
     }
 }

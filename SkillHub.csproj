@@ -54,6 +54,9 @@
     <Compile Include="Forms\Client\FrmCheckout.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\Client\FrmServiceDetails.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Forms\Admin\FrmFreelancerPerformance.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -176,6 +179,7 @@
     <Compile Include="Services\AuthorizationService.cs" />
     <Compile Include="Services\CheckoutService.cs" />
     <Compile Include="UI\MarketplaceTheme.cs" />
+    <Compile Include="UI\ImageAssetHelper.cs" />
     <Compile Include="UI\ModernButton.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -188,14 +192,61 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <Content Include="Assets\Profiles\ayesha-karim.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Profiles\farhan-kabir.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Profiles\nusrat-jahan.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Profiles\rafi-ahmed.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Profiles\samira-islam.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Profiles\tanvir-hasan.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Services\backend-api.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Services\cybersecurity.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Services\data-analytics.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Services\desktop-development.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Services\embedded-iot.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Services\frontend-web.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Services\mobile-apps.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Services\quality-assurance.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Services\uiux-design.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Database\SkillHubDatabase.sql" />
     <Content Include="Database\SkillHub_Verification.sql" />
     <Content Include="Documentation\AUTH_TEST_CASES.md" />
+    <Content Include="Documentation\REFINEMENT_TEST_CHECKLIST.md" />
     <Content Include="Documentation\SkillHub_Database_Foundation_Handoff_24-58148-2.docx" />
     <Content Include="Documentation\TEAM_HANDOFF.md" />
     <Content Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Assets\UserUploads\" />
     <Folder Include="Forms\Admin\Module_Owned_By_Omi\" />
     <Folder Include="Forms\Client\Module_Owned_By_Anika\" />
     <Folder Include="Forms\Freelancer\Module_Owned_By_Sadman\" />

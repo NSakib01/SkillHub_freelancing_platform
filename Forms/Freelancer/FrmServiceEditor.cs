@@ -16,6 +16,7 @@ namespace SkillHub.Forms.Freelancer
         private readonly int _freelancerId;
         private readonly int? _serviceId;
         private readonly bool _isEditMode;
+        private string _existingImagePath;
 
         public FrmServiceEditor(int freelancerId)
         {
@@ -167,6 +168,9 @@ namespace SkillHub.Forms.Freelancer
                 txtDescription.Text =
                     service.Description;
 
+                _existingImagePath =
+                    service.ImagePath;
+
                 nudPrice.Value =
                     service.Price;
 
@@ -316,6 +320,9 @@ namespace SkillHub.Forms.Freelancer
 
                 Description =
                     txtDescription.Text.Trim(),
+
+                ImagePath =
+                    _existingImagePath,
 
                 Price =
                     nudPrice.Value,

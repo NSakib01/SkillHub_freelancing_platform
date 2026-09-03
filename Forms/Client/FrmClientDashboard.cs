@@ -19,47 +19,54 @@ namespace SkillHub.Forms.Client
         "SkillHub | Client Dashboard")
         {
             AddMainCardWithAction(
-            "Services available to browse",
-            ReadCount(
-            "SELECT COUNT(*) FROM dbo.vw_ServiceCatalog "
-            + "WHERE IsActive = 1 AND AvailableSlots > 0;")
-            + " active software-development services are currently available.",
-            "Browse Services",
-            BrowseServicesButtonClick);
+                "Discover your next technology expert",
+                ReadCount(
+                    "SELECT COUNT(DISTINCT FreelancerId) FROM dbo.vw_ServiceCatalog "
+                    + "WHERE IsActive = 1 AND AvailableSlots > 0;")
+                + " active freelancer(s) are ready to help with your next project.",
+                "Explore Marketplace",
+                BrowseServicesButtonClick);
+
+            AddMainCardWithAction(
+                "Browse the visual service catalogue",
+                ReadCount(
+                    "SELECT COUNT(*) FROM dbo.vw_ServiceCatalog "
+                    + "WHERE IsActive = 1 AND AvailableSlots > 0;")
+                + " service package(s) can be searched, filtered, compared and opened for details.",
+                "View Services",
+                BrowseServicesButtonClick);
 
 
         AddMainCardWithAction(
-            "Your current shopping cart",
+                "Your project shortlist",
             ReadCount(
                 "SELECT COUNT(*) FROM dbo.CartItems AS items "
                 + "INNER JOIN dbo.Carts AS carts "
                 + "ON carts.CartId = items.CartId "
                 + "WHERE carts.ClientId = @UserId;",
                 UserSession.UserId)
-            + " item(s) belong to your personal cart.",
+                + " selected service item(s) are waiting in your cart.",
             "View Cart",
             CartButtonClick);
 
             AddMainCardWithAction(
-                "Your order history",
+                "Track your projects",
                 ReadCount(
                     "SELECT COUNT(*) FROM dbo.Orders "
                     + "WHERE ClientId = @UserId;",
                     UserSession.UserId)
-                + " order(s) are linked to your signed-in client account.",
+                + " order(s) are available in your project history.",
                 "My Orders",
                 OrdersButtonClick);
 
             AddMainCard(
-                "Client module owner: Anika",
-                "Client marketplace modules include "
-                + "Browse Services, Service Details, Cart, Checkout, "
-                + "My Orders, Review and Dispute.");
+                "A simple way to hire",
+                "Explore a service, review the complete offer and freelancer profile, "
+                + "add it to your cart, then place a simulated order securely.");
 
             AddSideCard(
-                "Client integration tables",
-                "Carts, CartItems, Orders, Payments, Reviews and Disputes. "
-                + "Read catalogue data from dbo.vw_ServiceCatalog.");
+                "Marketplace tip",
+                "Use category and price sorting to compare services. Open any card to read the full description before adding it to your cart.");
         }
 
         private void BrowseServicesButtonClick(

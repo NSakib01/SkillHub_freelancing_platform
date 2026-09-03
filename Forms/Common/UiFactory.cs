@@ -3,6 +3,7 @@ using System.Configuration;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Windows.Forms;
+using SkillHub.UI;
 
 namespace SkillHub.Forms.Common
 {
@@ -99,33 +100,17 @@ namespace SkillHub.Forms.Common
             int width = 160,
             int height = 40)
         {
-            Color backColor =
-                primary ? Primary : Color.White;
-
-            Color foreColor =
-                primary ? Color.White : PrimaryDark;
-
-            Button button = new Button
+            ModernButton button = new ModernButton
             {
                 Text = text,
                 Width = width,
                 Height = height,
-                BackColor = backColor,
-                ForeColor = foreColor,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font(
-                    "Segoe UI",
-                    9.5F,
-                    FontStyle.Bold),
                 Cursor = Cursors.Hand,
                 Margin = new Padding(0, 6, 12, 6),
-                UseVisualStyleBackColor = false
+                CornerRadius = 10
             };
 
-            button.FlatAppearance.BorderSize =
-                primary ? 0 : 1;
-
-            button.FlatAppearance.BorderColor = Border;
+            button.IsSecondary = !primary;
 
             return button;
         }
@@ -180,31 +165,16 @@ namespace SkillHub.Forms.Common
             int width,
             int height)
         {
-            Panel panel = new Panel
+            RoundedPanel panel = new RoundedPanel
             {
                 Width = width,
                 Height = height,
                 BackColor = CardBackground,
                 Padding = new Padding(24),
-                Margin = new Padding(0, 0, 0, 18)
-            };
-
-            panel.Paint += delegate (
-                object sender,
-                PaintEventArgs arguments)
-            {
-                using (Pen pen = new Pen(Border))
-                {
-                    Rectangle border = new Rectangle(
-                        0,
-                        0,
-                        panel.ClientSize.Width - 1,
-                        panel.ClientSize.Height - 1);
-
-                    arguments.Graphics.DrawRectangle(
-                        pen,
-                        border);
-                }
+                Margin = new Padding(0, 0, 0, 18),
+                CornerRadius = 16,
+                BorderColor = Border,
+                BorderThickness = 1
             };
 
             return panel;

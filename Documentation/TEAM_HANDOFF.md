@@ -36,6 +36,18 @@
 | Freelancer | `freelancer@skillhub.local` | `Freelancer@123` |
 | Client | `client@skillhub.local` | `Client@123` |
 
+Additional showcase freelancers use `Freelancer@123`:
+`ayesha@skillhub.local`, `tanvir@skillhub.local`, `nusrat@skillhub.local`,
+`farhan@skillhub.local`, and `samira@skillhub.local`.
+
+Additional showcase clients use `Client@123`:
+`mahin.client@skillhub.local`, `tasnim.client@skillhub.local`, and
+`arif.client@skillhub.local`.
+
+Profile portraits and service artwork are stored under `Assets`. Database image
+values are relative application paths so the same ZIP works on every teammate's
+Windows computer without remote image URLs.
+
 ## Naming values that must not drift
 
 | Contract | Approved values |

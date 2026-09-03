@@ -14,7 +14,7 @@ namespace SkillHub.Repositories
     {
         private const string AccountProjection =
             "SELECT u.UserId, u.RoleId, r.RoleName, u.FullName, u.Email, "
-            + "u.PasswordHash, u.Phone, u.Address, u.Status, u.CreatedAt "
+            + "u.PasswordHash, u.Phone, u.Address, u.ProfileImagePath, u.Status, u.CreatedAt "
             + "FROM dbo.Users AS u "
             + "INNER JOIN dbo.Roles AS r ON r.RoleId = u.RoleId ";
 
@@ -363,6 +363,9 @@ namespace SkillHub.Repositories
             user.Address = reader["Address"] == DBNull.Value
                 ? null
                 : Convert.ToString(reader["Address"]);
+            user.ProfileImagePath = reader["ProfileImagePath"] == DBNull.Value
+                ? null
+                : Convert.ToString(reader["ProfileImagePath"]);
             user.Status = Convert.ToString(reader["Status"]);
             user.CreatedAt = Convert.ToDateTime(reader["CreatedAt"]);
 

@@ -2,9 +2,40 @@
 
 ## Project Overview
 
-**SkillHub** is a planned desktop-based freelance marketplace management system for software-development and technology-related services. The platform is designed to connect clients with freelancers while providing an organized workflow for service discovery, ordering, simulated payment, project delivery, reviews, disputes, earnings, and platform administration.
+**SkillHub** is a complete academic desktop freelance marketplace for software-development and technology-related services. The platform connects clients with freelancers through visual service discovery, ordering, simulated payment, project delivery, reviews, disputes, earnings, and platform administration.
 
-The project is being designed as a **C# WinForms desktop application with SQL Server database integration** for the Object Oriented Programming 2 (OOP2) course.
+The project is implemented as a **C# WinForms desktop application with SQL Server database integration** for the Object Oriented Programming 2 (OOP2) course.
+
+## Quick Start
+
+1. Open SQL Server Management Studio and execute `Database/SkillHubDatabase.sql` in full.
+2. Execute `Database/SkillHub_Verification.sql` and confirm that every check prints `PASS`.
+3. Open `SkillHub.sln` in Visual Studio 2022 on Windows.
+4. If SQL Server Express is not named `.\SQLEXPRESS`, update only the `Data Source` value in `App.config`.
+5. Build the solution and run the application.
+
+### Primary demonstration accounts
+
+| Role | Email | Password |
+|---|---|---|
+| SUPER_ADMIN | `admin@skillhub.local` | `Admin@123` |
+| Freelancer / ADMIN | `freelancer@skillhub.local` | `Freelancer@123` |
+| Client / CUSTOMER | `client@skillhub.local` | `Client@123` |
+
+Additional freelancer accounts use `Freelancer@123`: `ayesha@skillhub.local`, `tanvir@skillhub.local`, `nusrat@skillhub.local`, `farhan@skillhub.local`, and `samira@skillhub.local`.
+
+Additional client accounts use `Client@123`: `mahin.client@skillhub.local`, `tasnim.client@skillhub.local`, and `arif.client@skillhub.local`.
+
+## Refined Marketplace Experience
+
+- Six seeded freelancers with professional biographies, skills, ratings, profile portraits and thirteen complete service listings
+- Four seeded clients, each with an automatically created personal cart
+- Visual service cards with local offline images, freelancer portraits, verification, category, rating, price, delivery and availability
+- Live keyword search across services, descriptions, freelancers, categories and skills
+- Category filtering and sorting by recommendation, rating, price, delivery time or newest listing
+- A complete service detail screen with the full service description and freelancer information
+- Freelancer-controlled profile photo and service image selection with safe visual fallbacks
+- Restyled shared dashboards, rounded cards and consistent marketplace colors across all roles
 
 ---
 
@@ -143,25 +174,26 @@ Other possible states include:
 
 ## Database Design
 
-The planned SQL Server database is normalized to **Third Normal Form (3NF)**.
+The SQL Server database is normalized to **Third Normal Form (3NF)**.
 
 ### Main Tables
 
-1. `Users`
-2. `FreelancerProfiles`
-3. `Categories`
-4. `Services`
-5. `Offers`
-6. `Carts`
-7. `CartItems`
-8. `Orders`
-9. `OrderItems`
-10. `Payments`
-11. `Reviews`
-12. `Disputes`
-13. `WalletTransactions`
-14. `WithdrawalRequests`
-15. `PlatformSettings`
+1. `Roles`
+2. `Users`
+3. `ClientProfiles`
+4. `FreelancerProfiles`
+5. `Categories`
+6. `Services`
+7. `Offers`
+8. `Carts`
+9. `CartItems`
+10. `Orders`
+11. `Payments`
+12. `WalletTransactions`
+13. `WithdrawalRequests`
+14. `Reviews`
+15. `Disputes`
+16. `PlatformSettings`
 
 The report also contains:
 
@@ -184,7 +216,7 @@ The report also contains:
 - A customer has a cart
 - A cart contains multiple cart items
 - A customer can place multiple orders
-- Orders contain one or more order items
+- Each order stores an immutable snapshot of one purchased service line
 - An order can have a payment record
 - An eligible completed order can have a review
 - An eligible order can have a dispute
@@ -193,7 +225,7 @@ The report also contains:
 
 ---
 
-## Planned Technology Stack
+## Technology Stack
 
 - **Language:** C#
 - **Framework:** .NET / Windows Forms
@@ -205,9 +237,9 @@ The report also contains:
 
 ---
 
-## Planned UI / Forms
+## Implemented UI / Forms
 
-The report includes planned WinForms wireframes and a navigation flow for:
+The WinForms solution includes working navigation for:
 
 - Login
 - Registration
@@ -259,9 +291,9 @@ The following screenshots and diagrams are stored in the repository under the `E
 
 ## Current Project Status
 
-This repository currently documents the **design and report stage** of SkillHub.
+This repository contains the integrated **working academic implementation** of SkillHub. It includes the SQL Server foundation, role-based authentication, visual service marketplace, freelancer service management, cart and simulated checkout, order workflows, reviews, disputes, wallet functions and SUPER_ADMIN management screens.
 
-The report provides the complete project blueprint, including the planned database, SQL queries, role-based functionality, UI navigation, and WinForms screen designs. The current report does **not** claim that the full application, real online payment gateway, or complete production system has already been implemented.
+The included image assets are local demonstration artwork. The project does not depend on remote image URLs and continues to show generated fallback artwork if an optional user image is missing.
 
 ---
 
@@ -274,22 +306,9 @@ The report provides the complete project blueprint, including the planned databa
 
 ---
 
-## Future Implementation
+## Possible Future Extension
 
-The next development stage will include:
-
-- Creating the WinForms solution
-- Building the SQL Server database
-- Connecting the application using ADO.NET
-- Implementing role-based authentication
-- Implementing CRUD operations
-- Implementing cart and checkout
-- Implementing simulated payment and commission logic
-- Implementing order tracking and delivery updates
-- Implementing reviews and disputes
-- Implementing wallet and withdrawal logic
-- Adding validation and exception handling
-- Testing all major workflows
+The academic version can later be extended with cloud-hosted storage, real payment-provider integration, email notifications, production identity verification and automated CI testing. Those production services are intentionally outside the current simulated course scope.
 
 ---
 

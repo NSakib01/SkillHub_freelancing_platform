@@ -3,9 +3,7 @@
 namespace SkillHub.UI
 {
     /// <summary>
-    /// Premium marketplace palette and typography for the Client module only.
-    /// Kept separate from Forms.Common.UiFactory so Admin and Freelancer
-    /// screens are never affected by this styling.
+    /// Shared premium marketplace palette and typography for all SkillHub roles.
     /// </summary>
     public static class MarketplaceTheme
     {
@@ -13,6 +11,10 @@ namespace SkillHub.UI
         public static readonly Color VibrantBlue = Color.FromArgb(29, 112, 236);
         public static readonly Color DeepCharcoal = Color.FromArgb(30, 34, 41);
         public static readonly Color SoftGray = Color.FromArgb(248, 250, 252);
+        public static readonly Color Navy = Color.FromArgb(15, 32, 65);
+        public static readonly Color Accent = Color.FromArgb(14, 165, 164);
+        public static readonly Color Success = Color.FromArgb(22, 163, 74);
+        public static readonly Color Warning = Color.FromArgb(217, 119, 6);
 
         public static readonly Color PageBackground = SoftGray;
         public static readonly Color CardBackground = White;
