@@ -45,6 +45,51 @@
   <ItemGroup>
     <Compile Include="Data\DatabaseConnection.cs" />
     <Compile Include="Forms\Admin\FrmAdminDashboard.cs" />
+    <Compile Include="Forms\Client\FrmBrowseServices.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Client\FrmCart.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Client\FrmCheckout.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Admin\FrmFreelancerPerformance.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Admin\FrmManageCategories.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Admin\FrmManageCategories.Designer.cs">
+      <DependentUpon>FrmManageCategories.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Admin\FrmManageDisputes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Admin\FrmManageOffers.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Admin\FrmManageOffers.Designer.cs">
+      <DependentUpon>FrmManageOffers.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Admin\FrmManagePayments.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Admin\FrmManageWithdrawals.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Admin\FrmPlatformSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Admin\FrmRevenueReport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Admin\Module_Owned_By_Aumi\FrmManageReviews.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Admin\Module_Owned_By_Aumi\FrmManageServices.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Forms\Client\FrmClientDashboard.cs" />
     <Compile Include="Forms\Client\FrmClientOrders.cs">
       <SubType>Form</SubType>
