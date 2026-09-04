@@ -10,9 +10,11 @@ The project is implemented as a **C# WinForms desktop application with SQL Serve
 
 1. Open SQL Server Management Studio and execute `Database/SkillHubDatabase.sql` in full.
 2. Execute `Database/SkillHub_Verification.sql` and confirm that every check prints `PASS`.
-3. Open `SkillHub.sln` in Visual Studio 2022 on Windows.
-4. If SQL Server Express is not named `.\SQLEXPRESS`, update only the `Data Source` value in `App.config`.
-5. Build the solution and run the application.
+3. Run 'SkillHub_Wallet_Earnings_Fix.sql'.
+4. Open `SkillHub.sln` in Visual Studio 2022 on Windows.
+5. If SQL Server Express is not named `.\SQLEXPRESS`, update only the `Data Source` value in `App.config`.
+6. Build the solution and run the application.
+
 
 ### Primary demonstration accounts
 
@@ -261,21 +263,18 @@ The WinForms solution includes working navigation for:
 ---
 
 ## Project Screenshots
-
-The following screenshots and diagrams are stored in the repository under the `Extras` folder.
+> more sample screenshots can be found at Extras/Screenshots
 
 | Screenshot 01 | Screenshot 02 |
 |---|---|
-| ![SkillHub Screenshot 01](Extras/picturesample00001.png) | ![SkillHub Screenshot 02](Extras/picturesample00002.png) |
-| ![SkillHub Screenshot 03](Extras/picturesample00003.png) | ![SkillHub Screenshot 04](Extras/picturesample00004.png) |
-| ![SkillHub Screenshot 05](Extras/picturesample00005.png) | ![SkillHub Screenshot 06](Extras/picturesample00006.png) |
-| ![SkillHub Screenshot 07](Extras/picturesample00007.png) | ![SkillHub Screenshot 08](Extras/picturesample00008.png) |
-| ![SkillHub Screenshot 09](Extras/picturesample00009.png) | ![SkillHub Screenshot 10](Extras/picturesample00010.png) |
-| ![SkillHub Screenshot 11](Extras/picturesample00011.png) | ![SkillHub Screenshot 12](Extras/picturesample00012.png) |
-| ![SkillHub Screenshot 13](Extras/picturesample00013.png) | ![SkillHub Screenshot 14](Extras/picturesample00014.png) |
-| ![SkillHub Screenshot 15](Extras/picturesample00015.png) | ![SkillHub Screenshot 16](Extras/picturesample00016.png) |
-| ![SkillHub Screenshot 17](Extras/picturesample00017.png) |  |
-
+| ![SkillHub Screenshot 01](Extras/Screenshots/Picture1.png) | ![SkillHub Screenshot 02](Extras/Screenshots/Picture2.png) |
+| ![SkillHub Screenshot 03](Extras/Screenshots/Picture3.png) | ![SkillHub Screenshot 04](Extras/Screenshots/Picture5.png) |
+| ![SkillHub Screenshot 05](Extras/Screenshots/Picture22.png) | ![SkillHub Screenshot 06](Extras/Screenshots/Picture8.png) |
+| ![SkillHub Screenshot 07](Extras/Screenshots/Picture4.png) | ![SkillHub Screenshot 08](Extras/Screenshots/Picture9.png) |
+| ![SkillHub Screenshot 09](Extras/Screenshots/Picture10.png) | ![SkillHub Screenshot 10](Extras/Screenshots/Picture11.png) |
+| ![SkillHub Screenshot 11](Extras/Screenshots/Picture12.png) | ![SkillHub Screenshot 12](Extras/Screenshots/Picture15.png) |
+| ![SkillHub Screenshot 13](Extras/Screenshots/Picture20.png) | ![SkillHub Screenshot 14](Extras/Screenshots/Picture21.png) |
+| ![SkillHub Screenshot 15](Extras/Screenshots/Picture19.png) | 
 ## Team Members
 
 | Serial | Name | Student ID | Main Contribution |
@@ -285,7 +284,7 @@ The following screenshots and diagrams are stored in the repository under the `E
 | 03 | Sadman Ahmed | 25-62451-2 | Freelancer module |
 | 04 | Anika Sumaiya | 24-59063-3 | Client / Customer module |
 
-> Contribution percentages should be entered according to the team's actual agreed workload.
+> Each contributor contributed evenly for this project.
 
 ---
 
@@ -293,7 +292,7 @@ The following screenshots and diagrams are stored in the repository under the `E
 
 This repository contains the integrated **working academic implementation** of SkillHub. It includes the SQL Server foundation, role-based authentication, visual service marketplace, freelancer service management, cart and simulated checkout, order workflows, reviews, disputes, wallet functions and SUPER_ADMIN management screens.
 
-The included image assets are local demonstration artwork. The project does not depend on remote image URLs and continues to show generated fallback artwork if an optional user image is missing.
+
 
 ---
 
@@ -311,7 +310,3 @@ The included image assets are local demonstration artwork. The project does not 
 The academic version can later be extended with cloud-hosted storage, real payment-provider integration, email notifications, production identity verification and automated CI testing. Those production services are intentionally outside the current simulated course scope.
 
 ---
-
-## Disclaimer
-
-SkillHub is an academic desktop application project. Payment functionality described in the report is simulated for educational purposes and does not represent a real banking or payment-gateway integration.
